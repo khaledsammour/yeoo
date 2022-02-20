@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "641062820679",
+    "project_id": "yeeo-59d85",
+    "storage_bucket": "yeeo-59d85.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641062820679:android:9ecf921c9bcdfd66624a62",
+        "android_client_info": {
+          "package_name": "com.example.yeeo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "641062820679-dr52qcs0p67g3mf0d62cnb6lrjg9120u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAG8jxJX-kPmW2YBnq3QuqPaVmMVK2kM54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "641062820679-dr52qcs0p67g3mf0d62cnb6lrjg9120u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
