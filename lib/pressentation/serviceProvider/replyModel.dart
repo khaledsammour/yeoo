@@ -11,9 +11,12 @@ class ReplyModel {
       jobId,
       serviceProviderId,
       service,
+      reported,
+      timeStamp,
       like,
       rejected;
   late List images;
+
   ReplyModel({
     required this.jobDetail,
     required this.images,
@@ -44,10 +47,13 @@ class ReplyModel {
     rejected = map['rejected'];
     duration = map['duration'];
     like = map['like'];
+
     userId = map['userId'];
     jobId = map['jobId'];
     serviceProviderId = map['serviceProviderId'];
     service = map['service'];
+    timeStamp = map['timeStamp'];
+    reported = map['reported'];
   }
   toJson() {
     return {
@@ -63,6 +69,8 @@ class ReplyModel {
       'jobId': jobId,
       'serviceProviderId': serviceProviderId,
       'service': service,
+      'timeStamp': DateTime.now().toString(),
+      'reported': "false",
       'like': "false",
       'accepted': "false",
       'rejected': "false",

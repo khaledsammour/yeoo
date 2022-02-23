@@ -9,7 +9,8 @@ TextStyle _getTextStyle(
       fontSize: fontSize.sp,
       fontFamily: fontFamily,
       fontWeight: fontWeight,
-      color: color);
+      color: color,
+      decoration: TextDecoration.none);
 }
 
 TextStyle getMPlus1cStyle(

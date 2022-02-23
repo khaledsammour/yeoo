@@ -857,6 +857,7 @@ class ServiceProviderView extends StatelessWidget {
                                             jobModel[index].like.add(controller
                                                 .serviceProviderModel
                                                 .serviceProviderId);
+
                                             controller.like(jobModel[index]);
                                             controller.update();
                                           }

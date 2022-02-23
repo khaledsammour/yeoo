@@ -10,6 +10,7 @@ class JobModel {
       accepted,
       opened,
       reported,
+      timeStamp,
       jobId;
   late List images;
   late List like;
@@ -42,6 +43,7 @@ class JobModel {
     opened = map['opened'];
     reported = map['reported'];
     like = map['like'];
+    timeStamp = map['timeStamp'];
     jobId = map['jobId'];
   }
   toJson(v) {
@@ -55,6 +57,7 @@ class JobModel {
       'location': location,
       'service': service,
       'images': images,
+      'timeStamp': DateTime.now().toString(),
       'like': [],
       'accepted': "false",
       'reported': "false",

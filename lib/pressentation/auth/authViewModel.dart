@@ -92,33 +92,36 @@ class AuthViewModel extends GetxController {
 
   void signInUser() async {
     try {
+      var found = false;
       for (int i = 0; i < _userModelList.length; i++) {
         if (_userModelList[i].userName == userName) {
           if (_userModelList[i].password == password) {
+            found = true;
             getCurrentUserData(_userModelList[i].userId);
             getToHome();
             break;
           } else {
+            found = true;
             Get.snackbar("wrong Password", "please type the right password");
             break;
           }
-        } else {
-          Get.snackbar("no userName", "please sign up with this userName");
-          break;
         }
       }
+      if (found == false) {
+        Get.snackbar("no user", "please type the right userName or signUp");
+      }
     } catch (e) {
-      Get.snackbar('Error Create account', e.toString(),
+      Get.snackbar('Error login account', e.toString(),
           colorText: Colors.black, snackPosition: SnackPosition.BOTTOM);
     }
   }
 
   getUsers() async {
     _loading.value = true;
-    update();
     await FireStoreUser().getUsers().then((value) {
       for (int i = 0; i < value.length; i++) {
         _userModelList.add(UserModel.fromJson(value[i].data()));
+        print(_userModelList.length);
       }
     });
     _loading.value = false;
@@ -210,7 +213,6 @@ class AuthViewModel extends GetxController {
 
   void setUser(UserModel userModel) async {
     await localStorageData.setUser(userModel);
-    getToHome();
   }
 
   setServiceprovider(ServiceProviderModel serviceProviderModel) async {

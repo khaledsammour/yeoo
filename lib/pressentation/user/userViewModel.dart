@@ -69,8 +69,8 @@ class UserViewModel extends GetxController {
       Get.snackbar("job details is empty", "please type job details");
     } else if (img.length == 0) {
       Get.snackbar("img is empty", "please choose one image atleast");
-    } else if (availabilityFrom == null && availabilityTo == null) {
-      Get.snackbar("availability is empty",
+    } else if (availabilityFrom == availabilityTo) {
+      Get.snackbar("availability is same",
           "please choose availability From and availability To");
     } else if (budgetFrom == "0" && budgetTo == "0") {
       Get.snackbar(
@@ -83,9 +83,19 @@ class UserViewModel extends GetxController {
       send = true;
       await uploadFile();
       await downloadUrl();
-      saveService();
-      update();
+      await saveService();
+      jobDetail = "";
+      img.clear();
+      imgFirebase.clear();
+      imgUrl.clear();
+      availabilityFrom = DateTime.now();
+      availabilityTo = DateTime.now();
+      budgetFrom = "0";
+      budgetTo = "0";
+      locationIndex = 0;
+      serviceIndex = 0;
       send = false;
+      update();
     }
   }
 
@@ -149,7 +159,7 @@ class UserViewModel extends GetxController {
     update();
   }
 
-  void saveService() async {
+  saveService() async {
     JobModel jobModel = JobModel(
       userId: _userModel.userId,
       jobDetail: jobDetail,

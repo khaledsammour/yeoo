@@ -12,7 +12,9 @@ class FireStoreServiceProvider {
   }
 
   Future<List<QueryDocumentSnapshot>> getService() async {
-    var value = await _serviceCollectionRef.get();
+    var value = await _serviceCollectionRef
+        .orderBy("timeStamp", descending: true)
+        .get();
     return value.docs;
   }
 

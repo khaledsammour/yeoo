@@ -20,6 +20,7 @@ class ColorManager {
   static Color starColor = HexColor.fromHex('F76868');
   static Color filterItemColor = HexColor.fromHex('#FFFDFD');
   static Color lightBlue = HexColor.fromHex('#6096A1');
+  static Color ratingColor = HexColor.fromHex('#FFBA34');
 }
 
 extension HexColor on Color {

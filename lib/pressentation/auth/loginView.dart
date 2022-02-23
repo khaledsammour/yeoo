@@ -227,7 +227,6 @@ class LoginView extends StatelessWidget {
                       autofillHints: AutofillHints.username,
                       left: 99,
                       onChanged: (value) {
-                        controller.email = value;
                         controller.userName = value;
                       },
                     ),

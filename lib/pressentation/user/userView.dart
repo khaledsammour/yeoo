@@ -10,7 +10,10 @@ import 'package:yeeo/pressentation/resource/stringsManager.dart';
 import 'package:yeeo/pressentation/resource/stylesManager.dart';
 import 'package:yeeo/pressentation/resource/valuesManager.dart';
 import 'package:yeeo/pressentation/user/userViewModel.dart';
+import 'package:yeeo/pressentation/widget/PicView.dart';
+import 'package:yeeo/pressentation/widget/budgetBottomSheet.dart';
 import 'package:yeeo/pressentation/widget/flexText.dart';
+import 'package:yeeo/pressentation/widget/imageBottomSheet.dart';
 
 class UserView extends StatelessWidget {
   const UserView({Key? key}) : super(key: key);
@@ -238,7 +241,7 @@ class UserView extends StatelessWidget {
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.all(31),
                           ),
-                        )
+                        ),
                       ],
                     )),
                 SizedBox(
@@ -274,137 +277,16 @@ class UserView extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.bottomSheet(Container(
-                                decoration: BoxDecoration(
-                                    color: ColorManager.whiteWithOpecity1),
-                                height: MediaQuery.of(context)
-                                        .copyWith()
-                                        .size
-                                        .height *
-                                    .26,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(AppPadding.p12),
-                                      height: MediaQuery.of(context)
-                                              .copyWith()
-                                              .size
-                                              .height *
-                                          .05,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          FlexText(
-                                            title: "Select Image",
-                                            style: getRegularSalsaStyle(
-                                                color: ColorManager.black,
-                                                fontSize: FontSize.s16),
-                                          ),
-                                          IconButton(
-                                              padding: EdgeInsets.all(0),
-                                              onPressed: () {
-                                                Get.back();
-                                              },
-                                              icon: Icon(Icons.clear_outlined))
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      height: MediaQuery.of(context)
-                                              .copyWith()
-                                              .size
-                                              .height *
-                                          .2,
-                                      child: Row(
-                                        children: [
-                                          Spacer(
-                                            flex: 1,
-                                          ),
-                                          Flexible(
-                                            flex: 10,
-                                            fit: FlexFit.tight,
-                                            child: GestureDetector(
-                                              onTap: () async {
-                                                controller.getImageFromCamera();
-
-                                                controller.update();
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        width: 2.w,
-                                                        color: ColorManager
-                                                            .yellow)),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.camera,
-                                                      color:
-                                                          ColorManager.yellow,
-                                                      size: 50.w,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5.h,
-                                                    ),
-                                                    FlexText(
-                                                      title: "Camera",
-                                                      style: getBoldStyle(
-                                                          color: ColorManager
-                                                              .black),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Spacer(
-                                            flex: 2,
-                                          ),
-                                          Flexible(
-                                            flex: 10,
-                                            fit: FlexFit.tight,
-                                            child: GestureDetector(
-                                              onTap: () async {
-                                                controller.getImage();
-                                                controller.update();
-                                              },
-                                              child: Container(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.photo,
-                                                      color:
-                                                          ColorManager.yellow,
-                                                      size: 50.w,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5.h,
-                                                    ),
-                                                    FlexText(
-                                                      title: "Gallary",
-                                                      style: getBoldStyle(
-                                                          color: ColorManager
-                                                              .black),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Spacer(
-                                            flex: 1,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )));
+                            Get.bottomSheet(ImageBottomSheet(
+                              onCameraTap: () {
+                                controller.getImageFromCamera();
+                                controller.update();
+                              },
+                              onGallaryTap: () {
+                                controller.getImage();
+                                controller.update();
+                              },
+                            ));
                           },
                           child: Container(
                             height: 38.h,
@@ -438,9 +320,16 @@ class UserView extends StatelessWidget {
                                         controller.longPressed = true;
                                         controller.update();
                                       },
+                                      onTap: () {
+                                        Get.dialog(PicView(
+                                          itemCount: controller.img.length,
+                                          path: controller.img,
+                                        ));
+                                      },
                                       child: Stack(
                                         children: [
                                           Container(
+                                            height: 24.h,
                                             width: 21.85.w,
                                             decoration: BoxDecoration(
                                                 border: Border.all(
@@ -449,11 +338,14 @@ class UserView extends StatelessWidget {
                                                     BorderRadius.circular(3.r)),
                                             child: controller.imageFile == null
                                                 ? Text("no file")
-                                                : Image.file(
-                                                    File(
-                                                      controller.img[index],
+                                                : Hero(
+                                                    tag: index,
+                                                    child: Image.file(
+                                                      File(
+                                                        controller.img[index],
+                                                      ),
+                                                      fit: BoxFit.fill,
                                                     ),
-                                                    fit: BoxFit.fill,
                                                   ),
                                           ),
                                           controller.longPressed
@@ -533,7 +425,7 @@ class UserView extends StatelessWidget {
                         width: 15.w,
                         child: Image.asset(ImageStrings.avavilability)),
                     SizedBox(
-                      height: 7.w,
+                      width: 7.w,
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 4.h),
@@ -546,76 +438,91 @@ class UserView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Get.bottomSheet(_selecAvailability(
-                                name: "From",
-                                onDateTimeChanged: (value) {
-                                  controller.availabilityFromSelected = value;
-                                },
-                                onTap: () {
-                                  controller.availabilityFrom =
-                                      controller.availabilityFromSelected;
-                                  controller.update();
-                                  Get.back();
-                                }));
-                          },
-                          child: Row(
-                            children: [
-                              FlexText(
-                                title: HomeStrings.from,
-                                style: getMeduimStyle(
-                                  color: ColorManager.black,
+                    Container(
+                      height: 17.h,
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Get.bottomSheet(_selecAvailability(
+                                  name: "From",
+                                  onDateTimeChanged: (value) {
+                                    controller.availabilityFromSelected = value;
+                                  },
+                                  onTap: () {
+                                    controller.availabilityFrom =
+                                        controller.availabilityFromSelected;
+                                    controller.update();
+                                    Get.back();
+                                  }));
+                            },
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 25.w,
+                                  child: FlexText(
+                                    title: HomeStrings.from,
+                                    style: getMeduimStyle(
+                                      color: ColorManager.black,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 5.w),
-                              FlexText(
-                                title: DateFormat('M/dd\nk:mm a')
-                                    .format(controller.availabilityFrom),
-                                style: getMeduimStyle(
-                                    color: ColorManager.black,
-                                    fontSize: FontSize.s12),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 5.w),
-                        GestureDetector(
-                          onTap: () {
-                            Get.bottomSheet(_selecAvailability(
-                                name: "To",
-                                onDateTimeChanged: (value) {
-                                  controller.availabilityToSelected = value;
-                                },
-                                onTap: () {
-                                  controller.availabilityTo =
-                                      controller.availabilityToSelected;
-                                  controller.update();
-                                  Get.back();
-                                }));
-                          },
-                          child: Row(
-                            children: [
-                              FlexText(
-                                title: HomeStrings.to,
-                                style: getMeduimStyle(
-                                  color: ColorManager.black,
+                                SizedBox(width: 1.w),
+                                Container(
+                                  width: 63.w,
+                                  child: FlexText(
+                                    title: DateFormat('M/dd k:mm a')
+                                        .format(controller.availabilityFrom),
+                                    style: getMeduimStyle(
+                                        color: ColorManager.black,
+                                        fontSize: FontSize.s10),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 3.w),
-                              FlexText(
-                                title: DateFormat('M/dd\nk:mm a')
-                                    .format(controller.availabilityTo),
-                                style: getMeduimStyle(
-                                    color: ColorManager.black,
-                                    fontSize: FontSize.s12),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 2.w),
+                          GestureDetector(
+                            onTap: () {
+                              Get.bottomSheet(_selecAvailability(
+                                  name: "To",
+                                  onDateTimeChanged: (value) {
+                                    controller.availabilityToSelected = value;
+                                  },
+                                  onTap: () {
+                                    controller.availabilityTo =
+                                        controller.availabilityToSelected;
+                                    controller.update();
+                                    Get.back();
+                                  }));
+                            },
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 15.w,
+                                  child: FlexText(
+                                    title: HomeStrings.to,
+                                    style: getMeduimStyle(
+                                      color: ColorManager.black,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 1.w),
+                                Container(
+                                  width: 63.w,
+                                  child: FlexText(
+                                    title: DateFormat('M/dd k:mm a')
+                                        .format(controller.availabilityTo),
+                                    style: getMeduimStyle(
+                                        color: ColorManager.black,
+                                        fontSize: FontSize.s10),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -646,7 +553,13 @@ class UserView extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => selectBudget(),
+                        onTap: () =>
+                            Get.bottomSheet(BudgetBottomSheet(onTap: () {
+                          controller.budgetFrom = budgetFrom!;
+                          controller.budgetTo = budgetTo!;
+                          controller.update();
+                          Get.back();
+                        })),
                         child: Container(
                           height: 17.h,
                           width: 167.w,
@@ -933,7 +846,6 @@ class UserView extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     controller.sending();
-                    controller.update();
                   },
                   child: Container(
                     margin: EdgeInsets.only(left: 119.w),
@@ -973,144 +885,6 @@ class UserView extends StatelessWidget {
             );
           });
     });
-  }
-
-  selectBudget() {
-    return Get.bottomSheet(Builder(builder: (context) {
-      return GetBuilder<UserViewModel>(
-          init: UserViewModel(),
-          builder: (controller) {
-            return Container(
-                decoration:
-                    BoxDecoration(color: ColorManager.whiteWithOpecity1),
-                height: MediaQuery.of(context).copyWith().size.height * .32,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(AppPadding.p12),
-                      height:
-                          MediaQuery.of(context).copyWith().size.height * .05,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Select your budget",
-                            overflow: TextOverflow.visible,
-                            style: getRegularSalsaStyle(
-                                color: ColorManager.black,
-                                fontSize: FontSize.s16),
-                          ),
-                          IconButton(
-                              padding: EdgeInsets.all(0),
-                              onPressed: () {
-                                Get.back();
-                              },
-                              icon: Icon(Icons.clear_outlined))
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height:
-                          MediaQuery.of(context).copyWith().size.height * .2,
-                      child: Row(
-                        children: [
-                          Flexible(
-                            flex: 10,
-                            fit: FlexFit.tight,
-                            child: TextField(
-                              onChanged: (value) {
-                                controller.budgetFromSelected = value;
-                              },
-                              keyboardType: TextInputType.number,
-                              style: getBoldStyle(color: ColorManager.black),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(top: 14),
-                                prefixIcon: Image.asset(
-                                  ImageStrings.budget,
-                                ),
-                                hintText: 'From',
-                                hintStyle:
-                                    getBoldStyle(color: ColorManager.black),
-                              ),
-                            ),
-                          ),
-                          Flexible(
-                              flex: 1,
-                              fit: FlexFit.tight,
-                              child: Text(
-                                "-",
-                                style: getBoldStyle(
-                                    color: ColorManager.black,
-                                    fontSize: FontSize.s36),
-                              )),
-                          Flexible(
-                            flex: 10,
-                            fit: FlexFit.tight,
-                            child: TextField(
-                              onChanged: (value) {
-                                controller.budgetToSelected = value;
-                              },
-                              keyboardType: TextInputType.number,
-                              style: getBoldStyle(color: ColorManager.black),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(top: 14),
-                                prefixIcon: Image.asset(
-                                  ImageStrings.budget,
-                                ),
-                                hintText: 'To',
-                                hintStyle:
-                                    getBoldStyle(color: ColorManager.black),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        controller.budgetFrom = controller.budgetFromSelected;
-                        controller.budgetTo = controller.budgetToSelected;
-                        controller.update();
-                        Get.back();
-                      },
-                      child: Container(
-                        height:
-                            MediaQuery.of(context).copyWith().size.height * .05,
-                        margin: EdgeInsets.symmetric(
-                          horizontal:
-                              MediaQuery.of(context).copyWith().size.width *
-                                  .35,
-                        ),
-                        decoration: BoxDecoration(
-                            color: ColorManager.confirm,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FlexText(
-                              title: "Confirm",
-                              style: getBoldStyle(
-                                  color: ColorManager.black,
-                                  fontSize: FontSize.s14),
-                            ),
-                            SizedBox(
-                              width: 3,
-                            ),
-                            Icon(
-                              Icons.check_outlined,
-                              color: ColorManager.whiteWithOpecity1,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ));
-          });
-    }));
   }
 
   _selecAvailability(

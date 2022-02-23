@@ -45,6 +45,7 @@ dependencies:
   cloud_firestore:
   firebase_storage:
   shimmer:
+  photo_view:
 
 dev_dependencies:
   flutter_test:

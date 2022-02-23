@@ -13,7 +13,9 @@ import 'package:yeeo/pressentation/user/jobModel.dart';
 import 'package:yeeo/pressentation/user/service/fireStoreService.dart';
 
 class InventoryViewModel extends GetxController {
+  int callAnswerRate = 0, serviceRate = 0, priceRate = 0, timeRate = 0;
   final LocalStorageData localStorageData = Get.find();
+  var reported = "false";
   List<ReplyModel> get replyModel => _replyModel;
   List<ReplyModel> _replyModel = [];
 
@@ -29,6 +31,38 @@ class InventoryViewModel extends GetxController {
   List<ReplyModel> _replyModelLands = [];
   List<ReplyModel> get replyModelCarp => _replyModelCarp;
   List<ReplyModel> _replyModelCarp = [];
+
+  List<ReplyModel> get likedReplyModelSwimming => _likedReplyModelSwimming;
+  List<ReplyModel> _likedReplyModelSwimming = [];
+  List<ReplyModel> get likedReplyModelInsect => _likedReplyModelInsect;
+  List<ReplyModel> _likedReplyModelInsect = [];
+  List<ReplyModel> get likedReplyModelConst => _likedReplyModelConst;
+  List<ReplyModel> _likedReplyModelConst = [];
+  List<ReplyModel> get likedReplyModelTech => _likedReplyModelTech;
+  List<ReplyModel> _likedReplyModelTech = [];
+  List<ReplyModel> get likedReplyModelLands => _likedReplyModelLands;
+  List<ReplyModel> _likedReplyModelLands = [];
+  List<ReplyModel> get likedReplyModelCarp => _likedReplyModelCarp;
+  List<ReplyModel> _likedReplyModelCarp = [];
+
+  List<ServiceProviderModel> get likedServiceProviderModelSwimming =>
+      _likedServiceProviderModelSwimming;
+  List<ServiceProviderModel> _likedServiceProviderModelSwimming = [];
+  List<ServiceProviderModel> get likedServiceProviderModelInsect =>
+      _likedServiceProviderModelInsect;
+  List<ServiceProviderModel> _likedServiceProviderModelInsect = [];
+  List<ServiceProviderModel> get likedServiceProviderModelConst =>
+      _likedServiceProviderModelConst;
+  List<ServiceProviderModel> _likedServiceProviderModelConst = [];
+  List<ServiceProviderModel> get likedServiceProviderModellTech =>
+      _likedServiceProviderModelTech;
+  List<ServiceProviderModel> _likedServiceProviderModelTech = [];
+  List<ServiceProviderModel> get likedServiceProviderModelLands =>
+      _likedServiceProviderModelLands;
+  List<ServiceProviderModel> _likedServiceProviderModelLands = [];
+  List<ServiceProviderModel> get likedServiceProviderModelCarp =>
+      _likedServiceProviderModelCarp;
+  List<ServiceProviderModel> _likedServiceProviderModelCarp = [];
 
   List<ServiceProviderModel> get serviceProviderModelSwimming =>
       _serviceProviderModelSwimming;
@@ -53,21 +87,28 @@ class InventoryViewModel extends GetxController {
   ValueNotifier<bool> get loading => _loading;
   ValueNotifier<bool> _loading = ValueNotifier(false);
   var filter = false;
-  var opened = false;
-  var service = [
-    HomeStrings.swimmingPool,
-    HomeStrings.insect,
-    HomeStrings.cons,
-    HomeStrings.tech,
-    HomeStrings.lands,
-    HomeStrings.carp
-  ];
-  var serviceIndex = 0;
+  var likeSelected = false;
+  Map<String, bool> service = {
+    HomeStrings.swimmingPool: true,
+    HomeStrings.insect: false,
+    HomeStrings.cons: false,
+    HomeStrings.tech: false,
+    HomeStrings.lands: false,
+    HomeStrings.carp: false
+  };
+  Map<String, bool> filterServices = {
+    HomeStrings.swimmingPool: false,
+    HomeStrings.insect: false,
+    HomeStrings.cons: false,
+    HomeStrings.tech: false,
+    HomeStrings.lands: false,
+    HomeStrings.carp: false
+  };
   var filterType = {
     'P': "pending",
     'O': "ongoing",
   };
-  var filterTypeIndex = 0;
+  int? filterTypeIndex;
   UserModel? _userModel;
   UserModel get userModel => _userModel!;
   void onInit() async {
@@ -77,6 +118,7 @@ class InventoryViewModel extends GetxController {
     await getServices();
     await getReplys();
     await sortOngoing();
+    await sortLiked();
   }
 
   getCurrentUser() async {
@@ -113,54 +155,111 @@ class InventoryViewModel extends GetxController {
     update();
   }
 
-  sortOngoing() {
+  sortOngoing() async {
     _loading.value = true;
 
     for (int i = 0; i < _replyModel.length; i++) {
       if (_replyModel[i].service == HomeStrings.swimmingPool) {
         _replyModelSwimming.add(_replyModel[i]);
-        FireStoreService()
+        await FireStoreService()
             .getServiceProviderUser(_replyModel[i].serviceProviderId)
             .then((value) => _serviceProviderModelSwimming
                 .add(ServiceProviderModel.fromJson(value.data()!)));
       }
       if (_replyModel[i].service == HomeStrings.insect) {
         _replyModelInsect.add(_replyModel[i]);
-        FireStoreService()
+        await FireStoreService()
             .getServiceProviderUser(_replyModel[i].serviceProviderId)
             .then((value) => _serviceProviderModelInsect
                 .add(ServiceProviderModel.fromJson(value.data()!)));
       }
       if (_replyModel[i].service == HomeStrings.cons) {
         _replyModelConst.add(_replyModel[i]);
-        FireStoreService()
+        await FireStoreService()
             .getServiceProviderUser(_replyModel[i].serviceProviderId)
             .then((value) => _serviceProviderModelConst
                 .add(ServiceProviderModel.fromJson(value.data()!)));
       }
       if (_replyModel[i].service == HomeStrings.tech) {
         _replyModelTech.add(_replyModel[i]);
-        FireStoreService()
+        await FireStoreService()
             .getServiceProviderUser(_replyModel[i].serviceProviderId)
             .then((value) => _serviceProviderModelTech
                 .add(ServiceProviderModel.fromJson(value.data()!)));
       }
       if (_replyModel[i].service == HomeStrings.lands) {
         _replyModelTech.add(_replyModel[i]);
-        FireStoreService()
+        await FireStoreService()
             .getServiceProviderUser(_replyModel[i].serviceProviderId)
             .then((value) => _serviceProviderModelLands
                 .add(ServiceProviderModel.fromJson(value.data()!)));
       }
       if (_replyModel[i].service == HomeStrings.carp) {
         _replyModelCarp.add(_replyModel[i]);
-        FireStoreService()
+        await FireStoreService()
             .getServiceProviderUser(_replyModel[i].serviceProviderId)
             .then((value) => _serviceProviderModelCarp
                 .add(ServiceProviderModel.fromJson(value.data()!)));
       }
     }
     _loading.value = false;
+
+    update();
+  }
+
+  sortLiked() {
+    _loading.value = true;
+
+    for (int i = 0; i < replyModelSwimming.length; i++) {
+      if (_replyModelSwimming[i].like == "true") {
+        _likedReplyModelSwimming.add(_replyModelSwimming[i]);
+        _likedServiceProviderModelSwimming
+            .add(_serviceProviderModelSwimming[i]);
+        break;
+      }
+    }
+    for (int i = 0; i < replyModelTech.length; i++) {
+      if (_replyModelTech[i].like == "true") {
+        _likedReplyModelTech.add(_replyModelTech[i]);
+        _likedServiceProviderModelTech.add(_serviceProviderModelTech[i]);
+        break;
+      }
+    }
+    for (int i = 0; i < replyModelCarp.length; i++) {
+      if (_replyModelCarp[i].like == "true") {
+        _likedReplyModelCarp.add(_replyModelCarp[i]);
+        _likedServiceProviderModelCarp.add(_serviceProviderModelCarp[i]);
+        break;
+      }
+    }
+    for (int i = 0; i < replyModelConst.length; i++) {
+      if (_replyModelConst[i].like == "true") {
+        _likedReplyModelSwimming.add(_replyModelConst[i]);
+        _likedServiceProviderModelConst.add(_serviceProviderModelConst[i]);
+        break;
+      }
+    }
+    for (int i = 0; i < replyModelInsect.length; i++) {
+      if (_replyModelInsect[i].like == "true") {
+        _likedReplyModelInsect.add(_replyModelInsect[i]);
+        _likedServiceProviderModelInsect.add(_serviceProviderModelInsect[i]);
+        break;
+      }
+    }
+    for (int i = 0; i < replyModelLands.length; i++) {
+      if (_replyModelLands[i].like == "true") {
+        _likedReplyModelLands.add(_replyModelLands[i]);
+        _likedServiceProviderModelLands.add(_serviceProviderModelLands[i]);
+        break;
+      }
+    }
+    _loading.value = false;
+
+    update();
+  }
+
+  like(ReplyModel replyModel) async {
+    await FireStoreService().addLike(replyModel);
 
     update();
   }

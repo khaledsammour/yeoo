@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:yeeo/pressentation/serviceProvider/replyModel.dart';
 import 'package:yeeo/pressentation/user/jobModel.dart';
 
 class FireStoreService {
@@ -23,7 +24,11 @@ class FireStoreService {
   }
 
   Future<List<QueryDocumentSnapshot>> getReplys(String uid) async {
-    var value = await _serviceCollectionRef.doc(uid).collection("replys").get();
+    var value = await _serviceCollectionRef
+        .doc(uid)
+        .collection("replys")
+        .orderBy("timeStamp", descending: true)
+        .get();
     return value.docs;
   }
 
@@ -33,5 +38,13 @@ class FireStoreService {
         .collection("replys")
         .doc(serviceProviderId)
         .update({"accepted": "true"});
+  }
+
+  addLike(ReplyModel replyModel) async {
+    return await _serviceCollectionRef
+        .doc(replyModel.jobId)
+        .collection("replys")
+        .doc(replyModel.serviceProviderId)
+        .update({"like": replyModel.like});
   }
 }
