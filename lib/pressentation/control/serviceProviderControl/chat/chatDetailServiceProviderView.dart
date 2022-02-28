@@ -7,10 +7,6 @@ import 'package:yeeo/pressentation/control/chat/chatDetailViewModel.dart';
 import 'package:yeeo/pressentation/control/chat/chatModel.dart';
 import 'package:yeeo/pressentation/control/serviceProviderControl/chat/serviceProviderChatView.dart';
 import 'package:yeeo/pressentation/control/serviceProviderControl/controlViewModelService.dart';
-import 'package:yeeo/pressentation/control/userControl/chat/chatView.dart';
-import 'package:yeeo/pressentation/control/userControl/chat/chatViewModel.dart';
-import 'package:yeeo/pressentation/control/chat/messageModel.dart';
-import 'package:yeeo/pressentation/control/userControl/controlViewModel.dart';
 import 'package:yeeo/pressentation/resource/colorManager.dart';
 import 'package:yeeo/pressentation/resource/stringsManager.dart';
 import 'package:yeeo/pressentation/resource/stylesManager.dart';
@@ -20,17 +16,14 @@ import 'package:yeeo/pressentation/widget/flexText.dart';
 class ChatDetailServiceProviderView extends StatelessWidget {
   const ChatDetailServiceProviderView({
     Key? key,
-    required this.serviceProviderModel,
-    required this.userModel,
     required this.chatModel,
   }) : super(key: key);
-  final ServiceProviderModel serviceProviderModel;
-  final UserModel userModel;
+
   final ChatModel chatModel;
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ChatDetailViewModel>(
+    return GetX<ChatDetailViewModel>(
         init: ChatDetailViewModel(chatModel: chatModel),
         builder: (controller) {
           return GestureDetector(
@@ -55,7 +48,7 @@ class ChatDetailServiceProviderView extends StatelessWidget {
                         Container(
                           width: 113.w,
                           child: FlexText(
-                            title: userModel.userName,
+                            title: chatModel.userName,
                             style: getRegularSalsaStyle(
                                 color: ColorManager.black,
                                 fontSize: FontSize.s36),
@@ -96,24 +89,23 @@ class ChatDetailServiceProviderView extends StatelessWidget {
                           controller.messageModel.length,
                           (index) => Container(
                                 height: 88.h,
-                                alignment: controller
-                                            .messageModel[index].sender ==
-                                        serviceProviderModel.serviceProviderId
-                                    ? Alignment.bottomRight
-                                    : Alignment.bottomLeft,
+                                alignment:
+                                    controller.messageModel[index].sender ==
+                                            chatModel.serviceProviderId
+                                        ? Alignment.bottomRight
+                                        : Alignment.bottomLeft,
                                 child: Column(
-                                  crossAxisAlignment: controller
-                                              .messageModel[index].sender ==
-                                          serviceProviderModel.serviceProviderId
-                                      ? CrossAxisAlignment.end
-                                      : CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      controller.messageModel[index].sender ==
+                                              chatModel.serviceProviderId
+                                          ? CrossAxisAlignment.end
+                                          : CrossAxisAlignment.start,
                                   children: [
                                     Flexible(
                                       child: Container(
                                         margin: controller.messageModel[index]
                                                     .sender ==
-                                                serviceProviderModel
-                                                    .serviceProviderId
+                                                chatModel.serviceProviderId
                                             ? EdgeInsets.only(right: 20.w)
                                             : EdgeInsets.only(left: 10.w),
                                         child: FlexText(
@@ -213,7 +205,7 @@ class ChatDetailServiceProviderView extends StatelessWidget {
                               controller.message == null
                                   ? Get.snackbar("empty", "type a message")
                                   : controller.sendMessage(chatModel.chatId,
-                                      serviceProviderModel.serviceProviderId);
+                                      chatModel.serviceProviderId);
                             },
                             child: Container(
                               margin: EdgeInsets.symmetric(vertical: 6.h),

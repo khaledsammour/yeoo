@@ -78,7 +78,13 @@ class SignupView extends StatelessWidget {
                       height: 50.h,
                     ),
                     _textFill(
-                      focusNode: controller.focusNode,
+                      validator: (value) {
+                        if (value!.length < 4) {
+                          return 'Enter at least 4 characters';
+                        } else {
+                          return null;
+                        }
+                      },
                       title: Strings.userName,
                       textInputType: TextInputType.name,
                       autofillHints: AutofillHints.username,
@@ -90,14 +96,25 @@ class SignupView extends StatelessWidget {
                       height: 24.h,
                     ),
                     _textFill(
-                      focusNode: controller.focusNode,
-                      title: Strings.password,
-                      textInputType: TextInputType.visiblePassword,
-                      autofillHints: AutofillHints.password,
-                      onChanged: (vlaue) {
-                        controller.password = vlaue;
-                      },
-                    ),
+                        validator: (value) {
+                          if (value!.length < 7) {
+                            return 'Password must be at least 7 characters long';
+                          } else {
+                            return null;
+                          }
+                        },
+                        password: true,
+                        title: Strings.password,
+                        obscureText: controller.pass,
+                        textInputType: TextInputType.visiblePassword,
+                        autofillHints: AutofillHints.password,
+                        onChanged: (vlaue) {
+                          controller.password = vlaue;
+                        },
+                        onEyeTap: () {
+                          controller.pass = !controller.pass;
+                          controller.update();
+                        }),
                     SizedBox(
                       height: 22.h,
                     ),
@@ -119,33 +136,22 @@ class SignupView extends StatelessWidget {
                           SizedBox(
                             width: 26.w,
                           ),
-                          Container(
-                            height: 27.h,
-                            width: 199.w,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: ColorManager.black),
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20.r),
-                                boxShadow: const [
-                                  BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 6,
-                                      offset: Offset(0, 2))
-                                ]),
-                            child: TextField(
-                              onChanged: (value) {
-                                controller.password == value
-                                    ? controller.notSame = true
-                                    : controller.notSame = false;
-                              },
-                              style: getMeduimStyle(color: ColorManager.black),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 15.h, horizontal: 5.w),
-                                hintStyle: TextStyle(color: Colors.black38),
-                              ),
-                            ),
+                          FlexTextFiled(
+                            onChanged: (value) {
+                              controller.password == value
+                                  ? controller.notSame = true
+                                  : controller.notSame = false;
+                            },
+                            autofillHints: '',
+                            left: 0,
+                            textInputType: TextInputType.visiblePassword,
+                            validator: (String) {},
+                            password: true,
+                            obscureText: controller.confirmPass,
+                            onEyeTap: () {
+                              controller.confirmPass = !controller.confirmPass;
+                              controller.update();
+                            },
                           ),
                         ],
                       ),
@@ -154,7 +160,19 @@ class SignupView extends StatelessWidget {
                       height: 7.h,
                     ),
                     _textFill(
-                      focusNode: controller.focusNode,
+                      validator: (value) {
+                        final pattern =
+                            r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)';
+                        final regExp = RegExp(pattern);
+
+                        if (value!.isEmpty) {
+                          return 'Enter an email';
+                        } else if (!regExp.hasMatch(value)) {
+                          return 'Enter a valid email';
+                        } else {
+                          return null;
+                        }
+                      },
                       title: Strings.email,
                       textInputType: TextInputType.emailAddress,
                       autofillHints: AutofillHints.email,
@@ -288,7 +306,10 @@ class SignupView extends StatelessWidget {
       {String? title,
       TextInputType? textInputType,
       String? autofillHints,
-      required FocusNode focusNode,
+      bool password = false,
+      required String? Function(String?)? validator,
+      Function()? onEyeTap,
+      bool obscureText = false,
       Function(String)? onChanged}) {
     return Container(
       margin: EdgeInsets.only(left: 27.w),
@@ -304,6 +325,10 @@ class SignupView extends StatelessWidget {
             ),
           ),
           FlexTextFiled(
+            onEyeTap: onEyeTap,
+            obscureText: obscureText,
+            validator: validator,
+            password: password,
             textInputType: textInputType!,
             autofillHints: autofillHints!,
             left: 26,

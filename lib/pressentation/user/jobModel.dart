@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class JobModel {
   late String userId,
       jobDetail,
@@ -11,11 +13,14 @@ class JobModel {
       opened,
       reported,
       timeStamp,
-      jobId;
+      jobId,
+      userName;
   late List images;
   late List like;
+  late List repledIds;
   JobModel({
     required this.userId,
+    required this.userName,
     required this.jobDetail,
     required this.images,
     required this.availabilityFrom,
@@ -26,29 +31,51 @@ class JobModel {
     required this.service,
   });
 
-  JobModel.fromJson(Map<dynamic, dynamic> map) {
-    if (map == null) {
-      return;
+  JobModel.fromJson(DocumentSnapshot documentSnapshot) {
+    userId = documentSnapshot["userId"];
+    userName = documentSnapshot["userName"];
+    jobDetail = documentSnapshot["jobDetail"];
+    availabilityFrom = documentSnapshot["availabilityFrom"];
+    availabilityTo = documentSnapshot["availabilityTo"];
+    budgetFrom = documentSnapshot["budgetFrom"];
+    budgetTo = documentSnapshot["budgetTo"];
+    location = documentSnapshot["location"];
+    service = documentSnapshot["service"];
+    images = documentSnapshot["images"];
+    accepted = documentSnapshot["accepted"];
+    opened = documentSnapshot["opened"];
+    reported = documentSnapshot["reported"];
+    like = documentSnapshot["like"];
+    timeStamp = documentSnapshot["timeStamp"];
+    jobId = documentSnapshot["jobId"];
+    repledIds = documentSnapshot["repledIds"];
+  }
+  JobModel.fromJsonNoUpdate(Map<dynamic, dynamic> map) {
+    if (map == null) {}
+    {
+      userId = map["userId"];
+      userName = map["userName"];
+      jobDetail = map["jobDetail"];
+      availabilityFrom = map["availabilityFrom"];
+      availabilityTo = map["availabilityTo"];
+      budgetFrom = map["budgetFrom"];
+      budgetTo = map["budgetTo"];
+      location = map["location"];
+      service = map["service"];
+      images = map["images"];
+      accepted = map["accepted"];
+      opened = map["opened"];
+      reported = map["reported"];
+      like = map["like"];
+      timeStamp = map["timeStamp"];
+      jobId = map["jobId"];
+      repledIds = map["repledIds"];
     }
-    userId = map['userId'];
-    jobDetail = map['jobDetail'];
-    availabilityFrom = map['availabilityFrom'];
-    availabilityTo = map['availabilityTo'];
-    budgetFrom = map['budgetFrom'];
-    budgetTo = map['budgetTo'];
-    location = map['location'];
-    service = map['service'];
-    images = map['images'];
-    accepted = map['accepted'];
-    opened = map['opened'];
-    reported = map['reported'];
-    like = map['like'];
-    timeStamp = map['timeStamp'];
-    jobId = map['jobId'];
   }
   toJson(v) {
     return {
       'userId': userId,
+      'userName': userName,
       'jobDetail': jobDetail,
       'availabilityFrom': availabilityFrom,
       'availabilityTo': availabilityTo,
@@ -59,6 +86,7 @@ class JobModel {
       'images': images,
       'timeStamp': DateTime.now().toString(),
       'like': [],
+      'repledIds': [],
       'accepted': "false",
       'reported': "false",
       'opened': "false",

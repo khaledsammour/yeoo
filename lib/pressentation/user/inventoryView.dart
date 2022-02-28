@@ -156,186 +156,159 @@ class InventoryView extends StatelessWidget {
                   Flexible(
                       flex: 570,
                       child: SingleChildScrollView(
-                        child: controller.filter
-                            ? _filter()
-                            : controller.likeSelected
-                                ? _likedServices()
-                                : controller.filterServices.containsValue(true)
-                                    ? _filtred()
-                                    : Column(
-                                        children: [
-                                          controller.replyModelSwimming
-                                                      .length ==
-                                                  0
-                                              ? SizedBox(
-                                                  height: 0,
-                                                )
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    controller.service[
-                                                            HomeStrings
-                                                                .swimmingPool] =
-                                                        !controller.service[
-                                                            HomeStrings
-                                                                .swimmingPool]!;
-                                                    controller.update();
-                                                  },
-                                                  child: _inventoryItem(
-                                                      "swimming pool"),
-                                                ),
-                                          controller.service[
-                                                  HomeStrings.swimmingPool]!
-                                              ? _inventory(
-                                                  controller.replyModelSwimming,
-                                                  controller
-                                                      .serviceProviderModelSwimming)
-                                              : SizedBox(
-                                                  height: 1,
-                                                ),
-                                          SizedBox(
-                                            height: 6.h,
-                                          ),
-                                          controller.replyModelInsect.length ==
-                                                  0
-                                              ? SizedBox(
-                                                  height: 0,
-                                                )
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    controller.service[
-                                                            HomeStrings
-                                                                .insect] =
-                                                        !controller.service[
-                                                            HomeStrings
-                                                                .insect]!;
-                                                    controller.update();
-                                                  },
-                                                  child:
-                                                      _inventoryItem("insect."),
-                                                ),
-                                          controller
-                                                  .service[HomeStrings.insect]!
-                                              ? _inventory(
-                                                  controller.replyModelInsect,
-                                                  controller
-                                                      .serviceProviderModelInsect)
-                                              : SizedBox(
-                                                  height: 1,
-                                                ),
-                                          SizedBox(
-                                            height: 6.h,
-                                          ),
-                                          controller.replyModelConst.length == 0
-                                              ? SizedBox(
-                                                  height: 0,
-                                                )
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    controller.service[
-                                                            HomeStrings.cons] =
-                                                        !controller.service[
-                                                            HomeStrings.cons]!;
-                                                    controller.update();
-                                                  },
-                                                  child:
-                                                      _inventoryItem("const."),
-                                                ),
-                                          controller.service[HomeStrings.cons]!
-                                              ? _inventory(
-                                                  controller.replyModelConst,
-                                                  controller
-                                                      .serviceProviderModelConst)
-                                              : SizedBox(
-                                                  height: 1,
-                                                ),
-                                          SizedBox(
-                                            height: 6.h,
-                                          ),
-                                          controller.replyModelTech.length == 0
-                                              ? SizedBox(
-                                                  height: 0,
-                                                )
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    controller.service[
-                                                            HomeStrings.tech] =
-                                                        !controller.service[
-                                                            HomeStrings.tech]!;
-                                                    controller.update();
-                                                  },
-                                                  child:
-                                                      _inventoryItem("tech."),
-                                                ),
-                                          controller.service[HomeStrings.tech]!
-                                              ? _inventory(
-                                                  controller.replyModelTech,
-                                                  controller
-                                                      .serviceProviderModellTech)
-                                              : SizedBox(
-                                                  height: 1,
-                                                ),
-                                          SizedBox(
-                                            height: 6.h,
-                                          ),
-                                          controller.replyModelLands.length == 0
-                                              ? SizedBox(
-                                                  height: 0,
-                                                )
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    controller.service[
-                                                            HomeStrings.lands] =
-                                                        !controller.service[
-                                                            HomeStrings.lands]!;
-                                                    controller.update();
-                                                  },
-                                                  child:
-                                                      _inventoryItem("lands"),
-                                                ),
-                                          controller.service[HomeStrings.lands]!
-                                              ? _inventory(
-                                                  controller.replyModelLands,
-                                                  controller
-                                                      .serviceProviderModelLands)
-                                              : SizedBox(
-                                                  height: 1,
-                                                ),
-                                          SizedBox(
-                                            height: 6.h,
-                                          ),
-                                          controller.replyModelCarp.length == 0
-                                              ? SizedBox(
-                                                  height: 0,
-                                                )
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    controller.service[
-                                                            HomeStrings.carp] =
-                                                        !controller.service[
-                                                            HomeStrings.carp]!;
-                                                    controller.update();
-                                                  },
-                                                  child:
-                                                      _inventoryItem("carps."),
-                                                ),
-                                          controller.service[HomeStrings.carp]!
-                                              ? _inventory(
-                                                  controller.replyModelCarp,
-                                                  controller
-                                                      .serviceProviderModelCarp)
-                                              : SizedBox(
-                                                  height: 1,
-                                                ),
-                                          SizedBox(
-                                            height: 6.h,
-                                          ),
-                                        ],
-                                      ),
-                      ))
+                          child: controller.filter
+                              ? _filter()
+                              : controller.likeSelected
+                                  ? _likedServices()
+                                  : controller.filterServices
+                                          .containsValue(true)
+                                      ? _filtred()
+                                      : _all()))
                 ],
               ),
       ),
     );
+  }
+
+  _all() {
+    return GetX<InventoryViewModel>(
+        init: InventoryViewModel(),
+        builder: (controller) {
+          return Column(
+            children: [
+              controller.swimming.length == 0
+                  ? SizedBox(
+                      height: 0,
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        controller.service[HomeStrings.swimmingPool] =
+                            !controller.service[HomeStrings.swimmingPool]!;
+                        controller.update();
+                      },
+                      child: _inventoryItem("swimming pool"),
+                    ),
+              controller.service[HomeStrings.swimmingPool]!
+                  ? _inventory(
+                      controller.swimming,
+                    )
+                  : SizedBox(
+                      height: 1,
+                    ),
+              SizedBox(
+                height: 6.h,
+              ),
+              controller.insect.length == 0
+                  ? SizedBox(
+                      height: 0,
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        controller.service[HomeStrings.insect] =
+                            !controller.service[HomeStrings.insect]!;
+                        controller.update();
+                      },
+                      child: _inventoryItem("insect."),
+                    ),
+              controller.service[HomeStrings.insect]!
+                  ? _inventory(
+                      controller.insect,
+                    )
+                  : SizedBox(
+                      height: 1,
+                    ),
+              SizedBox(
+                height: 6.h,
+              ),
+              controller.constr.length == 0
+                  ? SizedBox(
+                      height: 0,
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        controller.service[HomeStrings.cons] =
+                            !controller.service[HomeStrings.cons]!;
+                        controller.update();
+                      },
+                      child: _inventoryItem("const."),
+                    ),
+              controller.service[HomeStrings.cons]!
+                  ? _inventory(
+                      controller.constr,
+                    )
+                  : SizedBox(
+                      height: 1,
+                    ),
+              SizedBox(
+                height: 6.h,
+              ),
+              controller.tech.length == 0
+                  ? SizedBox(
+                      height: 0,
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        controller.service[HomeStrings.tech] =
+                            !controller.service[HomeStrings.tech]!;
+                        controller.update();
+                      },
+                      child: _inventoryItem("tech."),
+                    ),
+              controller.service[HomeStrings.tech]!
+                  ? _inventory(controller.tech)
+                  : SizedBox(
+                      height: 1,
+                    ),
+              SizedBox(
+                height: 6.h,
+              ),
+              controller.lands.length == 0
+                  ? SizedBox(
+                      height: 0,
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        controller.service[HomeStrings.lands] =
+                            !controller.service[HomeStrings.lands]!;
+                        controller.update();
+                      },
+                      child: _inventoryItem("lands"),
+                    ),
+              controller.service[HomeStrings.lands]!
+                  ? _inventory(
+                      controller.lands,
+                    )
+                  : SizedBox(
+                      height: 1,
+                    ),
+              SizedBox(
+                height: 6.h,
+              ),
+              controller.carp.length == 0
+                  ? SizedBox(
+                      height: 0,
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        controller.service[HomeStrings.carp] =
+                            !controller.service[HomeStrings.carp]!;
+                        controller.update();
+                      },
+                      child: _inventoryItem("carps."),
+                    ),
+              controller.service[HomeStrings.carp]!
+                  ? _inventory(
+                      controller.carp,
+                    )
+                  : SizedBox(
+                      height: 1,
+                    ),
+              SizedBox(
+                height: 6.h,
+              ),
+            ],
+          );
+        });
   }
 
   _filtred() {
@@ -345,7 +318,7 @@ class InventoryView extends StatelessWidget {
           return Column(
             children: [
               controller.filterServices[HomeStrings.swimmingPool]!
-                  ? controller.replyModelSwimming.length == 0
+                  ? controller.swimming.length == 0
                       ? SizedBox(
                           height: 0,
                         )
@@ -361,8 +334,9 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("swimming pool"),
                             ),
                             controller.service[HomeStrings.swimmingPool]!
-                                ? _inventory(controller.replyModelSwimming,
-                                    controller.serviceProviderModelSwimming)
+                                ? _inventory(
+                                    controller.swimming,
+                                  )
                                 : SizedBox(
                                     height: 0.h,
                                   )
@@ -375,7 +349,7 @@ class InventoryView extends StatelessWidget {
                 height: 6.h,
               ),
               controller.filterServices[HomeStrings.insect]!
-                  ? controller.replyModelInsect.length == 0
+                  ? controller.insect.length == 0
                       ? SizedBox(
                           height: 0,
                         )
@@ -390,8 +364,9 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("insect."),
                             ),
                             controller.service[HomeStrings.insect]!
-                                ? _inventory(controller.replyModelInsect,
-                                    controller.serviceProviderModelInsect)
+                                ? _inventory(
+                                    controller.insect,
+                                  )
                                 : SizedBox(
                                     height: 0.h,
                                   ),
@@ -404,7 +379,7 @@ class InventoryView extends StatelessWidget {
                 height: 6.h,
               ),
               controller.filterServices[HomeStrings.cons]!
-                  ? controller.replyModelConst.length == 0
+                  ? controller.constr.length == 0
                       ? SizedBox(
                           height: 0,
                         )
@@ -419,8 +394,9 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("const."),
                             ),
                             controller.service[HomeStrings.cons]!
-                                ? _inventory(controller.replyModelConst,
-                                    controller.serviceProviderModelConst)
+                                ? _inventory(
+                                    controller.constr,
+                                  )
                                 : SizedBox(
                                     height: 0.h,
                                   ),
@@ -433,7 +409,7 @@ class InventoryView extends StatelessWidget {
                 height: 6.h,
               ),
               controller.filterServices[HomeStrings.tech]!
-                  ? controller.replyModelTech.length == 0
+                  ? controller.tech.length == 0
                       ? SizedBox(
                           height: 0,
                         )
@@ -448,8 +424,9 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("tech."),
                             ),
                             controller.service[HomeStrings.tech]!
-                                ? _inventory(controller.replyModelTech,
-                                    controller.serviceProviderModellTech)
+                                ? _inventory(
+                                    controller.tech,
+                                  )
                                 : SizedBox(
                                     height: 1,
                                   ),
@@ -462,7 +439,7 @@ class InventoryView extends StatelessWidget {
                 height: 6.h,
               ),
               controller.filterServices[HomeStrings.lands]!
-                  ? controller.replyModelLands.length == 0
+                  ? controller.lands.length == 0
                       ? SizedBox(
                           height: 0,
                         )
@@ -477,8 +454,9 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("lands"),
                             ),
                             controller.service[HomeStrings.lands]!
-                                ? _inventory(controller.replyModelLands,
-                                    controller.serviceProviderModelLands)
+                                ? _inventory(
+                                    controller.lands,
+                                  )
                                 : SizedBox(
                                     height: 1,
                                   ),
@@ -491,7 +469,7 @@ class InventoryView extends StatelessWidget {
                 height: 6.h,
               ),
               controller.filterServices[HomeStrings.carp]!
-                  ? controller.replyModelCarp.length == 0
+                  ? controller.carp.length == 0
                       ? SizedBox(
                           height: 0,
                         )
@@ -506,8 +484,9 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("carps."),
                             ),
                             controller.service[HomeStrings.carp]!
-                                ? _inventory(controller.replyModelCarp,
-                                    controller.serviceProviderModelCarp)
+                                ? _inventory(
+                                    controller.carp,
+                                  )
                                 : SizedBox(
                                     height: 1,
                                   ),
@@ -787,7 +766,6 @@ class InventoryView extends StatelessWidget {
 
   _inventory(
     List<ReplyModel> replyModel,
-    List<ServiceProviderModel> serviceProviderModel,
   ) {
     return Builder(builder: (context) {
       return GetBuilder<InventoryViewModel>(
@@ -799,13 +777,13 @@ class InventoryView extends StatelessWidget {
                   (index) => replyModel[index].accepted == "true"
                       ? controller.filterTypeIndex == 1 ||
                               controller.filterTypeIndex == null
-                          ? _accepted(serviceProviderModel[index])
+                          ? _accepted(replyModel[index].userName)
                           : SizedBox(
                               height: 0.h,
                             )
                       : replyModel[index].reported == "true"
-                          ? _reported(serviceProviderModel[index].userName,
-                              replyModel[index])
+                          ? _reported(
+                              replyModel[index].userName, replyModel[index])
                           : controller.filterTypeIndex == 0 ||
                                   controller.filterTypeIndex == null
                               ? Container(
@@ -842,8 +820,7 @@ class InventoryView extends StatelessWidget {
                                               alignment: Alignment.bottomLeft,
                                               child: FlexText(
                                                 title:
-                                                    serviceProviderModel[index]
-                                                        .userName,
+                                                    replyModel[index].userName,
                                                 style: getRegularSalsaStyle(
                                                     color: ColorManager.black,
                                                     fontSize: FontSize.s36),
@@ -922,13 +899,11 @@ class InventoryView extends StatelessWidget {
                                           scrollDirection: Axis.horizontal,
                                           child: Row(
                                             children: List.generate(
-                                                controller.replyModel[index]
-                                                    .images.length,
+                                                replyModel[index].images.length,
                                                 (indexI) => SizedBox(
                                                       width: 134.w,
                                                       child: Image.network(
-                                                        controller
-                                                            .replyModel[index]
+                                                        replyModel[index]
                                                             .images[indexI],
                                                         fit: BoxFit.fill,
                                                       ),
@@ -943,8 +918,7 @@ class InventoryView extends StatelessWidget {
                                         height: 52.h,
                                         width: 397.w,
                                         child: FlexText(
-                                          title: controller
-                                              .replyModel[index].jobDetail,
+                                          title: replyModel[index].jobDetail,
                                           style: getMPlus1cStyle(
                                               color: ColorManager.black),
                                         ),
@@ -1055,10 +1029,8 @@ class InventoryView extends StatelessWidget {
                                                       replyModel[index]
                                                           .accepted = "true";
                                                       controller.accepted(
-                                                          replyModel[index]
-                                                              .jobId,
-                                                          replyModel[index]
-                                                              .serviceProviderId);
+                                                          
+                                                          replyModel[index]);
                                                       controller.update();
                                                     },
                                                     child: Container(
@@ -1123,16 +1095,24 @@ class InventoryView extends StatelessWidget {
                                                 GestureDetector(
                                                   onTap: () {
                                                     if (replyModel[index]
-                                                            .like ==
-                                                        "true") {
-                                                      replyModel[index].like =
-                                                          "false";
+                                                        .like
+                                                        .contains(controller
+                                                            .userModel
+                                                            .userId)) {
+                                                      replyModel[index]
+                                                          .like
+                                                          .remove(controller
+                                                              .userModel
+                                                              .userId);
                                                       controller.like(
                                                           replyModel[index]);
                                                       controller.update();
                                                     } else {
-                                                      replyModel[index].like =
-                                                          "true";
+                                                      replyModel[index]
+                                                          .like
+                                                          .add(controller
+                                                              .userModel
+                                                              .userId);
                                                       controller.like(
                                                           replyModel[index]);
                                                       controller.update();
@@ -1141,14 +1121,15 @@ class InventoryView extends StatelessWidget {
                                                   child: Container(
                                                       height: 18.73.h,
                                                       width: 18.07.w,
-                                                      child: Image.asset(
-                                                          replyModel[index]
-                                                                      .like ==
-                                                                  "true"
-                                                              ? ImageStrings
-                                                                  .liked
-                                                              : ImageStrings
-                                                                  .like)),
+                                                      child: Image.asset(replyModel[
+                                                                  index]
+                                                              .like
+                                                              .contains(
+                                                                  controller
+                                                                      .userModel
+                                                                      .userId)
+                                                          ? ImageStrings.liked
+                                                          : ImageStrings.like)),
                                                 ),
                                                 Spacer(
                                                   flex: 5,
@@ -1178,7 +1159,11 @@ class InventoryView extends StatelessWidget {
                 ? _filter()
                 : Column(
                     children: [
-                      controller.replyModelSwimming.length == 0
+                      controller.swimming
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -1192,15 +1177,23 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("swimming pool"),
                             ),
                       controller.service[HomeStrings.swimmingPool]!
-                          ? _inventory(controller.likedReplyModelSwimming,
-                              controller.serviceProviderModelSwimming)
+                          ? _inventory(
+                              controller.swimming
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .toList(),
+                            )
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedReplyModelInsect.length == 0
+                      controller.insect
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -1213,15 +1206,23 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("insect."),
                             ),
                       controller.service[HomeStrings.insect]!
-                          ? _inventory(controller.likedReplyModelInsect,
-                              controller.serviceProviderModelInsect)
+                          ? _inventory(
+                              controller.insect
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .toList(),
+                            )
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedReplyModelConst.length == 0
+                      controller.constr
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -1234,15 +1235,23 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("const."),
                             ),
                       controller.service[HomeStrings.cons]!
-                          ? _inventory(controller.likedReplyModelConst,
-                              controller.serviceProviderModelConst)
+                          ? _inventory(
+                              controller.constr
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .toList(),
+                            )
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedReplyModelTech.length == 0
+                      controller.tech
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -1255,15 +1264,23 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("tech."),
                             ),
                       controller.service[HomeStrings.tech]!
-                          ? _inventory(controller.likedReplyModelTech,
-                              controller.serviceProviderModellTech)
+                          ? _inventory(
+                              controller.tech
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .toList(),
+                            )
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedReplyModelLands.length == 0
+                      controller.lands
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -1276,15 +1293,23 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("lands"),
                             ),
                       controller.service[HomeStrings.lands]!
-                          ? _inventory(controller.likedReplyModelLands,
-                              controller.serviceProviderModelLands)
+                          ? _inventory(
+                              controller.lands
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .toList(),
+                            )
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedReplyModelCarp.length == 0
+                      controller.carp
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -1297,8 +1322,12 @@ class InventoryView extends StatelessWidget {
                               child: _inventoryItem("carps."),
                             ),
                       controller.service[HomeStrings.carp]!
-                          ? _inventory(controller.likedReplyModelCarp,
-                              controller.serviceProviderModelCarp)
+                          ? _inventory(
+                              controller.carp
+                                  .where((p0) => p0.like
+                                      .contains(controller.userModel.userId))
+                                  .toList(),
+                            )
                           : SizedBox(
                               height: 1,
                             ),
@@ -1360,7 +1389,7 @@ class InventoryView extends StatelessWidget {
     });
   }
 
-  _accepted(ServiceProviderModel serviceProviderModel) {
+  _accepted(String name) {
     return Builder(builder: (context) {
       return Container(
         margin: EdgeInsets.only(top: 25.h),
@@ -1392,7 +1421,7 @@ class InventoryView extends StatelessWidget {
                         height: 36.04.h,
                         width: 113.w,
                         child: FlexText(
-                          title: serviceProviderModel.userName,
+                          title: name,
                           style: getRegularSalsaStyle(
                               color: ColorManager.black,
                               fontSize: FontSize.s36),
@@ -1512,7 +1541,7 @@ class InventoryView extends StatelessWidget {
                                 init: InventoryViewModel(),
                                 builder: (controller) {
                                   return RatingView(
-                                    userName: serviceProviderModel.userName,
+                                    userName: name,
                                     callAnswerRate:
                                         controller.callAnswerRate.toDouble(),
                                     serviceRate:

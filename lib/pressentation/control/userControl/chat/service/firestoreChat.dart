@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:yeeo/pressentation/control/chat/chatModel.dart';
+import 'package:yeeo/pressentation/control/chat/messageModel.dart';
+
+import '../../../../auth/serviceProviderModel.dart';
 
 class FireStoreChat {
   final CollectionReference _serviceProviderCollectionRef =
@@ -17,10 +20,34 @@ class FireStoreChat {
     return await _userCollectionRef.doc(uid).get();
   }
 
-  Future<List<QueryDocumentSnapshot>> getChat(userId) async {
-    var value =
-        await _chatCollectionRef.where("userId", isEqualTo: userId).get();
-    return value.docs;
+  Stream<List<ChatModel>> getChat(userId) {
+    return _chatCollectionRef
+        .where("userId", isEqualTo: userId)
+        .snapshots()
+        .map((QuerySnapshot query) {
+      List<ChatModel> chatModel = [];
+      for (var chatModelq in query.docs) {
+        final chatModels = ChatModel.fromJson(chatModelq);
+        chatModel.add(chatModels);
+      }
+
+      return chatModel;
+    });
+  }
+
+  Stream<List<ChatModel>> getChatforServiceProvider(serviceProviderId) {
+    return _chatCollectionRef
+        .where("serviceProviderId", isEqualTo: serviceProviderId)
+        .snapshots()
+        .map((QuerySnapshot query) {
+      List<ChatModel> chatModel = [];
+      for (var chatModelq in query.docs) {
+        final chatModels = ChatModel.fromJson(chatModelq);
+        chatModel.add(chatModels);
+      }
+
+      return chatModel;
+    });
   }
 
   Future<List<QueryDocumentSnapshot>> getChatServiceProvider(userId) async {
@@ -32,16 +59,23 @@ class FireStoreChat {
 
   Future<void> addChatToFirestore(ChatModel chatModel) async {
     var v = _chatCollectionRef.doc();
-    v.set(chatModel.toJson(v.id));
+    await v.set(chatModel.toJson(v.id));
   }
 
-  Future<List<QueryDocumentSnapshot>> getMessages(id) async {
-    var value = await _chatCollectionRef
+  Stream<List<MessageModel>> getMessages(id) {
+    return _chatCollectionRef
         .doc(id)
         .collection("message")
         .orderBy("timeStamp", descending: false)
-        .get();
-    return value.docs;
+        .snapshots()
+        .map((QuerySnapshot query) {
+      List<MessageModel> messageModel = [];
+      for (var messageModelq in query.docs) {
+        final messageModels = MessageModel.fromJson(messageModelq);
+        messageModel.add(messageModels);
+      }
+      return messageModel;
+    });
   }
 
   addMessage(chatId, messageModel) async {

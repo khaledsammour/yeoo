@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yeeo/pressentation/auth/loginView.dart';
 import 'package:yeeo/pressentation/auth/service/localStorageData.dart';
 import 'package:yeeo/pressentation/auth/userModel.dart';
-import 'package:yeeo/pressentation/serviceProvider/serviceProviderView.dart';
 import 'package:yeeo/pressentation/user/inventoryView.dart';
 import 'package:yeeo/pressentation/user/userView.dart';
 

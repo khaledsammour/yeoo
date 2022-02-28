@@ -12,19 +12,18 @@ class ServiceProviderChatViewModel extends GetxController {
   final LocalStorageData localStorageData = Get.find();
   ServiceProviderModel get serviceProviderModel => _serviceProviderModel;
   late ServiceProviderModel _serviceProviderModel;
-  List<UserModel> get userModel => _userModel;
-  List<UserModel> _userModel = [];
 
-  List<ChatModel> get chatModel => _chatModel;
-  List<ChatModel> _chatModel = [];
+  RxList<ChatModel> chatModel = RxList([]);
+
   TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
+
   @override
-  void onInit() async {
-    super.onInit();
+  void onReady() async {
+    super.onReady();
     await getCurrentUser();
-    await getChats();
-    await getService();
+    chatModel.bindStream(FireStoreChat()
+        .getChatforServiceProvider(_serviceProviderModel.serviceProviderId));
   }
 
   getCurrentUser() async {
@@ -32,32 +31,6 @@ class ServiceProviderChatViewModel extends GetxController {
     await localStorageData.getServiceProvider.then((value) {
       _serviceProviderModel = value!;
     });
-    _loading.value = false;
-    update();
-  }
-
-  getChats() async {
-    _loading.value = true;
-    await FireStoreChat()
-        .getChatServiceProvider(_serviceProviderModel.serviceProviderId)
-        .then((value) {
-      for (int i = 0; i < value.length; i++) {
-        _chatModel.add(ChatModel.fromJson(value[i].data()));
-
-        _loading.value = false;
-        update();
-      }
-    });
-  }
-
-  getService() async {
-    _loading.value = true;
-
-    for (int i = 0; i < _chatModel.length; i++) {
-      await FireStoreChat().getuser(_chatModel[i].userId).then((value) {
-        _userModel.add(UserModel.fromJson(value.data()!));
-      });
-    }
     _loading.value = false;
     update();
   }

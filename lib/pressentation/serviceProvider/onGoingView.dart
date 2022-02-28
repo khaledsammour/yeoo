@@ -1,19 +1,22 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:yeeo/pressentation/auth/loading.dart';
 import 'package:yeeo/pressentation/auth/userModel.dart';
+import 'package:yeeo/pressentation/control/serviceProviderControl/controlViewModelService.dart';
+import 'package:yeeo/pressentation/control/userControl/chat/chatView.dart';
 import 'package:yeeo/pressentation/resource/colorManager.dart';
 import 'package:yeeo/pressentation/resource/stringsManager.dart';
 import 'package:yeeo/pressentation/resource/stylesManager.dart';
 import 'package:yeeo/pressentation/resource/valuesManager.dart';
+import 'package:yeeo/pressentation/serviceProvider/onGoingViewModel.dart';
 import 'package:yeeo/pressentation/serviceProvider/replyModel.dart';
-import 'package:yeeo/pressentation/serviceProvider/serviceProviderViewModel.dart';
 import 'package:yeeo/pressentation/widget/flexText.dart';
 import 'package:yeeo/pressentation/widget/loadingWidget.dart';
+import 'package:yeeo/pressentation/widget/ratingView.dart';
+
+import '../control/serviceProviderControl/chat/serviceProviderChatView.dart';
 
 class OngoingView extends StatelessWidget {
   const OngoingView({Key? key}) : super(key: key);
@@ -22,8 +25,8 @@ class OngoingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: GetBuilder<ServiceProviderViewModel>(
-        init: ServiceProviderViewModel(),
+      body: GetBuilder<OnGoingViewModel>(
+        init: OnGoingViewModel(),
         builder: (controller) => controller.loading.value
             ? LoadingWidget()
             : Column(
@@ -75,155 +78,153 @@ class OngoingView extends StatelessWidget {
                         width: 74.w,
                         child: Image.asset(
                           ImageStrings.filter,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.contain,
                         )),
                   ),
                   SizedBox(
                     height: controller.opened || controller.filter ? 15.h : 0.h,
                   ),
-                  Flexible(
-                      flex: 1,
-                      child: SingleChildScrollView(
-                        child: controller.filter
-                            ? _filter()
-                            : Column(
-                                children: [
-                                  controller.onGoingSwimming.length == 0
-                                      ? SizedBox(
-                                          height: 0,
-                                        )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            controller.opened
-                                                ? controller.opened = false
-                                                : controller.opened = true;
-                                            controller.update();
-                                          },
-                                          child:
-                                              _inventoryItem("swimming pool"),
-                                        ),
-                                  controller.opened
-                                      ? _inventory(controller.onGoingSwimming,
-                                          controller.onGoinguserModelSwimming)
-                                      : SizedBox(
-                                          height: 1,
-                                        ),
-                                  SizedBox(
-                                    height: 6.h,
-                                  ),
-                                  controller.onGoingInsect.length == 0
-                                      ? SizedBox(
-                                          height: 0,
-                                        )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            controller.opened
-                                                ? controller.opened = false
-                                                : controller.opened = true;
-                                            controller.update();
-                                          },
-                                          child: _inventoryItem("insect."),
-                                        ),
-                                  controller.opened
-                                      ? _inventory(controller.onGoingInsect,
-                                          controller.onGoinguserModelInsect)
-                                      : SizedBox(
-                                          height: 1,
-                                        ),
-                                  SizedBox(
-                                    height: 6.h,
-                                  ),
-                                  controller.onGoingConst.length == 0
-                                      ? SizedBox(
-                                          height: 0,
-                                        )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            controller.opened
-                                                ? controller.opened = false
-                                                : controller.opened = true;
-                                            controller.update();
-                                          },
-                                          child: _inventoryItem("const."),
-                                        ),
-                                  controller.opened
-                                      ? _inventory(controller.onGoingConst,
-                                          controller.onGoinguserModelConst)
-                                      : SizedBox(
-                                          height: 1,
-                                        ),
-                                  SizedBox(
-                                    height: 6.h,
-                                  ),
-                                  controller.onGoingTech.length == 0
-                                      ? SizedBox(
-                                          height: 0,
-                                        )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            controller.opened
-                                                ? controller.opened = false
-                                                : controller.opened = true;
-                                            controller.update();
-                                          },
-                                          child: _inventoryItem("tech."),
-                                        ),
-                                  controller.opened
-                                      ? _inventory(controller.onGoingTech,
-                                          controller.onGoinguserModelTech)
-                                      : SizedBox(
-                                          height: 1,
-                                        ),
-                                  SizedBox(
-                                    height: 6.h,
-                                  ),
-                                  controller.onGoingLands.length == 0
-                                      ? SizedBox(
-                                          height: 0,
-                                        )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            controller.opened
-                                                ? controller.opened = false
-                                                : controller.opened = true;
-                                            controller.update();
-                                          },
-                                          child: _inventoryItem("lands"),
-                                        ),
-                                  controller.opened
-                                      ? _inventory(controller.onGoingLands,
-                                          controller.onGoinguserModelLands)
-                                      : SizedBox(
-                                          height: 1,
-                                        ),
-                                  SizedBox(
-                                    height: 6.h,
-                                  ),
-                                  controller.onGoingCarp.length == 0
-                                      ? SizedBox(
-                                          height: 0,
-                                        )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            controller.opened
-                                                ? controller.opened = false
-                                                : controller.opened = true;
-                                            controller.update();
-                                          },
-                                          child: _inventoryItem("carps."),
-                                        ),
-                                  controller.opened
-                                      ? _inventory(controller.onGoingCarp,
-                                          controller.onGoinguserModelCarp)
-                                      : SizedBox(
-                                          height: 1,
-                                        ),
-                                  SizedBox(
-                                    height: 6.h,
-                                  ),
-                                ],
-                              ),
-                      ))
+                  Flexible(flex: 1, child: _all())
+                ],
+              ),
+      ),
+    );
+  }
+
+  _all() {
+    return GetX<OnGoingViewModel>(
+      init: OnGoingViewModel(),
+      builder: (controller) => SingleChildScrollView(
+        child: controller.filter
+            ? _filter()
+            : Column(
+                children: [
+                  controller.swimming.length == 0
+                      ? SizedBox(
+                          height: 0,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            controller.opened
+                                ? controller.opened = false
+                                : controller.opened = true;
+                            controller.update();
+                          },
+                          child: _inventoryItem("swimming pool"),
+                        ),
+                  controller.opened
+                      ? _inventory(controller.swimming)
+                      : SizedBox(
+                          height: 1,
+                        ),
+                  SizedBox(
+                    height: 6.h,
+                  ),
+                  controller.insect.length == 0
+                      ? SizedBox(
+                          height: 0,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            controller.opened
+                                ? controller.opened = false
+                                : controller.opened = true;
+                            controller.update();
+                          },
+                          child: _inventoryItem("insect."),
+                        ),
+                  controller.opened
+                      ? _inventory(controller.insect)
+                      : SizedBox(
+                          height: 1,
+                        ),
+                  SizedBox(
+                    height: 6.h,
+                  ),
+                  controller.constr.length == 0
+                      ? SizedBox(
+                          height: 0,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            controller.opened
+                                ? controller.opened = false
+                                : controller.opened = true;
+                            controller.update();
+                          },
+                          child: _inventoryItem("const."),
+                        ),
+                  controller.opened
+                      ? _inventory(controller.constr)
+                      : SizedBox(
+                          height: 1,
+                        ),
+                  SizedBox(
+                    height: 6.h,
+                  ),
+                  controller.tech.length == 0
+                      ? SizedBox(
+                          height: 0,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            controller.opened
+                                ? controller.opened = false
+                                : controller.opened = true;
+                            controller.update();
+                          },
+                          child: _inventoryItem("tech."),
+                        ),
+                  controller.opened
+                      ? _inventory(controller.tech)
+                      : SizedBox(
+                          height: 1,
+                        ),
+                  SizedBox(
+                    height: 6.h,
+                  ),
+                  controller.lands.length == 0
+                      ? SizedBox(
+                          height: 0,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            controller.opened
+                                ? controller.opened = false
+                                : controller.opened = true;
+                            controller.update();
+                          },
+                          child: _inventoryItem("lands"),
+                        ),
+                  controller.opened
+                      ? _inventory(controller.lands)
+                      : SizedBox(
+                          height: 1,
+                        ),
+                  SizedBox(
+                    height: 6.h,
+                  ),
+                  controller.carp.length == 0
+                      ? SizedBox(
+                          height: 0,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            controller.opened
+                                ? controller.opened = false
+                                : controller.opened = true;
+                            controller.update();
+                          },
+                          child: _inventoryItem("carps."),
+                        ),
+                  controller.opened
+                      ? _inventory(controller.carp)
+                      : SizedBox(
+                          height: 1,
+                        ),
+                  SizedBox(
+                    height: 6.h,
+                  ),
                 ],
               ),
       ),
@@ -232,8 +233,8 @@ class OngoingView extends StatelessWidget {
 
   _filter() {
     return Builder(builder: (context) {
-      return GetBuilder<ServiceProviderViewModel>(
-          init: ServiceProviderViewModel(),
+      return GetBuilder<OnGoingViewModel>(
+          init: OnGoingViewModel(),
           builder: (controller) {
             return Container(
               height: 116.h,
@@ -321,16 +322,16 @@ class OngoingView extends StatelessWidget {
     });
   }
 
-  _inventory(List<ReplyModel> replyModel, List<UserModel> userModel) {
+  _inventory(List<ReplyModel> replyModel) {
     return Builder(builder: (context) {
-      return GetBuilder<ServiceProviderViewModel>(
-          init: ServiceProviderViewModel(),
+      return GetBuilder<OnGoingViewModel>(
+          init: OnGoingViewModel(),
           builder: (controller) {
             return Column(
               children: List.generate(
                 replyModel.length,
                 (index) => replyModel[index].accepted == "true"
-                    ? _accepted(userModel[index])
+                    ? _accepted(replyModel[index].userName)
                     : Container(
                         margin: EdgeInsets.only(top: 19.h, left: 19.w),
                         height: 496.h,
@@ -355,7 +356,7 @@ class OngoingView extends StatelessWidget {
                               width: 162.35,
                               margin: EdgeInsets.only(left: 36.w),
                               child: FlexText(
-                                title: userModel[index].userName,
+                                title: replyModel[index].userName,
                                 style: getMPlus1cStyle(
                                     color: ColorManager.black,
                                     fontSize: FontSize.s24),
@@ -518,7 +519,7 @@ class OngoingView extends StatelessWidget {
     });
   }
 
-  _accepted(UserModel userModel) {
+  _accepted(String userName) {
     return Builder(builder: (context) {
       return Container(
         margin: EdgeInsets.only(top: 25.h),
@@ -550,7 +551,7 @@ class OngoingView extends StatelessWidget {
                         height: 36.04.h,
                         width: 113.w,
                         child: FlexText(
-                          title: userModel.userName,
+                          title: userName,
                           style: getRegularSalsaStyle(
                               color: ColorManager.black,
                               fontSize: FontSize.s36),
@@ -625,22 +626,34 @@ class OngoingView extends StatelessWidget {
             SizedBox(
               height: 33.h,
             ),
-            Container(
-              height: 38.h,
-              decoration: BoxDecoration(
-                color: ColorManager.yellow,
-                border: Border.symmetric(
-                  horizontal: BorderSide(color: ColorManager.black),
-                ),
-              ),
-              child: Center(
-                child: FlexText(
-                  title: "Chat",
-                  style: getMPlus1cStyle(
-                      color: ColorManager.black, fontSize: FontSize.s36),
-                ),
-              ),
-            ),
+            GetBuilder<ControlViewModelService>(
+                init: ControlViewModelService(),
+                builder: (controlController) {
+                  return GestureDetector(
+                    onTap: () {
+                      controlController.currentScreen =
+                          ServiceProviderChatView();
+                      controlController.update();
+                    },
+                    child: Container(
+                      height: 38.h,
+                      decoration: BoxDecoration(
+                        color: ColorManager.yellow,
+                        border: Border.symmetric(
+                          horizontal: BorderSide(color: ColorManager.black),
+                        ),
+                      ),
+                      child: Center(
+                        child: FlexText(
+                          title: "Chat",
+                          style: getMPlus1cStyle(
+                              color: ColorManager.black,
+                              fontSize: FontSize.s36),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
             SizedBox(
               height: 57.h,
             ),
@@ -651,40 +664,57 @@ class OngoingView extends StatelessWidget {
                     SizedBox(
                       width: 23.w,
                     ),
-                    Container(
-                      width: 145.w,
-                      decoration: BoxDecoration(
-                          color: ColorManager.primary,
-                          border: Border.all(
-                            color: ColorManager.black,
-                          ),
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Center(
-                        child: FlexText(
-                          title: "Done",
-                          style: getMPlus1cStyle(
+                    GestureDetector(
+                      onTap: () {
+                        Get.dialog(RatingView(
+                            onChangedcallAnswerRate: (v) {},
+                            onChangedserviceRate: (v) {},
+                            onChangedpriceRate: (v) {},
+                            onChangedtimeRate: (v) {},
+                            userName: userName,
+                            callAnswerRate: 0,
+                            serviceRate: 0,
+                            priceRate: 0,
+                            timeRate: 0));
+                      },
+                      child: Container(
+                        width: 145.w,
+                        decoration: BoxDecoration(
+                            color: ColorManager.primary,
+                            border: Border.all(
                               color: ColorManager.black,
-                              fontSize: FontSize.s20),
+                            ),
+                            borderRadius: BorderRadius.circular(30)),
+                        child: Center(
+                          child: FlexText(
+                            title: "Done",
+                            style: getMPlus1cStyle(
+                                color: ColorManager.black,
+                                fontSize: FontSize.s20),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(
                       width: 53.w,
                     ),
-                    Container(
-                      width: 145.w,
-                      decoration: BoxDecoration(
-                          color: ColorManager.primary,
-                          border: Border.all(
-                            color: ColorManager.black,
-                          ),
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Center(
-                        child: FlexText(
-                          title: "cancel",
-                          style: getMPlus1cStyle(
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        width: 145.w,
+                        decoration: BoxDecoration(
+                            color: ColorManager.primary,
+                            border: Border.all(
                               color: ColorManager.black,
-                              fontSize: FontSize.s20),
+                            ),
+                            borderRadius: BorderRadius.circular(30)),
+                        child: Center(
+                          child: FlexText(
+                            title: "cancel",
+                            style: getMPlus1cStyle(
+                                color: ColorManager.black,
+                                fontSize: FontSize.s20),
+                          ),
                         ),
                       ),
                     ),

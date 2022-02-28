@@ -5,6 +5,8 @@ import 'package:yeeo/pressentation/user/jobModel.dart';
 class FireStoreService {
   final CollectionReference _serviceCollectionRef =
       FirebaseFirestore.instance.collection('Service');
+  final CollectionReference _replyCollectionRef =
+      FirebaseFirestore.instance.collection('Reply');
   final CollectionReference _serviceProviderCollectionRef =
       FirebaseFirestore.instance.collection('serviceProvider');
 
@@ -18,33 +20,35 @@ class FireStoreService {
   }
 
   Future<List<QueryDocumentSnapshot>> getServices(String uid) async {
-    var value =
-        await _serviceCollectionRef.where("userId", isEqualTo: uid).get();
-    return value.docs;
+    var v = await _serviceCollectionRef.where("userId", isEqualTo: uid).get();
+    return v.docs;
   }
 
-  Future<List<QueryDocumentSnapshot>> getReplys(String uid) async {
-    var value = await _serviceCollectionRef
-        .doc(uid)
-        .collection("replys")
+  Stream<List<ReplyModel>> getReplys(service) {
+    return _replyCollectionRef
+        .where("service", isEqualTo: service)
         .orderBy("timeStamp", descending: true)
-        .get();
-    return value.docs;
+        .snapshots()
+        .map((QuerySnapshot query) {
+      List<ReplyModel> replyModel = [];
+      for (var replyModelq in query.docs) {
+        final replyModels = ReplyModel.fromJson(replyModelq);
+        replyModel.add(replyModels);
+      }
+
+      return replyModel;
+    });
   }
 
-  void acceptOrder(serviceId, serviceProviderId) async {
-    return await _serviceCollectionRef
-        .doc(serviceId)
-        .collection("replys")
-        .doc(serviceProviderId)
+  void acceptOrder(replyModelId) async {
+    return await _replyCollectionRef
+        .doc(replyModelId)
         .update({"accepted": "true"});
   }
 
   addLike(ReplyModel replyModel) async {
-    return await _serviceCollectionRef
-        .doc(replyModel.jobId)
-        .collection("replys")
-        .doc(replyModel.serviceProviderId)
+    return await _replyCollectionRef
+        .doc(replyModel.replyId)
         .update({"like": replyModel.like});
   }
 }

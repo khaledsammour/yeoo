@@ -22,11 +22,15 @@ class FireStoreUser {
     return value.docs;
   }
 
-  Future<void> addServiceProviderToFireStore(
+  Future<List<QueryDocumentSnapshot>> getServiceProviders() async {
+    var value = await _serviceProviderCollectionRef.get();
+    return value.docs;
+  }
+
+  addServiceProviderToFireStore(
       ServiceProviderModel serviceProviderModel) async {
-    return await _serviceProviderCollectionRef
-        .doc(serviceProviderModel.serviceProviderId)
-        .set(serviceProviderModel.toJson());
+    var v = await _serviceProviderCollectionRef.doc();
+    v.set(serviceProviderModel.toJson(v.id));
   }
 
   Future<DocumentSnapshot> getCurrentServiceProvider(String uid) async {

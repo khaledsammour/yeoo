@@ -5,6 +5,8 @@ class ServiceProviderModel {
       phoneNumber,
       jobTitle,
       companyLogo,
+      latitude,
+      longitude,
       location;
   late List tradeLicense;
   ServiceProviderModel({
@@ -16,6 +18,8 @@ class ServiceProviderModel {
     required this.location,
     required this.tradeLicense,
     required this.password,
+    required this.latitude,
+    required this.longitude,
   });
 
   ServiceProviderModel.fromJson(Map<dynamic, dynamic> map) {
@@ -30,10 +34,12 @@ class ServiceProviderModel {
     location = map['location'];
     tradeLicense = map['tradeLicense'];
     password = map['password'];
+    latitude = map['latitude'];
+    longitude = map['longitude'];
   }
-  toJson() {
+  toJson(v) {
     return {
-      'serviceProviderId': serviceProviderId,
+      'serviceProviderId': v,
       'userName': userName,
       'phoneNumber': phoneNumber,
       'jobTitle': jobTitle,
@@ -41,6 +47,8 @@ class ServiceProviderModel {
       'location': location,
       'tradeLicense': tradeLicense,
       'password': password,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }

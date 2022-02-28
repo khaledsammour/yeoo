@@ -6,12 +6,13 @@ import 'package:yeeo/pressentation/control/chat/chatDetailView.dart';
 import 'package:yeeo/pressentation/control/userControl/chat/chatViewModel.dart';
 import 'package:yeeo/pressentation/control/userControl/controlViewModel.dart';
 import 'package:yeeo/pressentation/resource/colorManager.dart';
-import 'package:yeeo/pressentation/resource/stringsManager.dart';
 import 'package:yeeo/pressentation/resource/stylesManager.dart';
 import 'package:yeeo/pressentation/resource/valuesManager.dart';
 import 'package:yeeo/pressentation/widget/flexText.dart';
 import 'package:yeeo/pressentation/widget/flexTextFiled.dart';
 import 'package:yeeo/pressentation/widget/loadingWidget.dart';
+
+import '../../../resource/stringsManager.dart';
 
 class ChatView extends StatelessWidget {
   const ChatView({
@@ -22,7 +23,7 @@ class ChatView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.primary,
-      body: GetBuilder<ChatViewModel>(
+      body: GetX<ChatViewModel>(
           init: ChatViewModel(),
           builder: (controller) {
             return Column(
@@ -56,6 +57,7 @@ class ChatView extends StatelessWidget {
                             color: ColorManager.black, fontSize: FontSize.s24),
                       ),
                       FlexTextFiled(
+                          validator: (p0) {},
                           width: 256,
                           textInputType: TextInputType.text,
                           autofillHints: AutofillHints.name,
@@ -81,10 +83,7 @@ class ChatView extends StatelessWidget {
                                     onTap: () {
                                       controlControlller.currentScreen =
                                           ChatDetailView(
-                                        serviceProviderModel: controller
-                                            .serviceProviderModel[index],
                                         chatModel: controller.chatModel[index],
-                                        userModel: controller.userModel,
                                       );
                                       controlControlller.update();
                                     },
@@ -101,10 +100,10 @@ class ChatView extends StatelessWidget {
                                             height: 74.h,
                                             decoration: BoxDecoration(
                                                 image: DecorationImage(
-                                                    image: NetworkImage(controller
-                                                        .serviceProviderModel[
-                                                            index]
-                                                        .companyLogo),
+                                                    image: NetworkImage(
+                                                        controller
+                                                            .chatModel[index]
+                                                            .serviceProviderImg),
                                                     fit: BoxFit.fill),
                                                 borderRadius:
                                                     BorderRadius.circular(
@@ -123,9 +122,8 @@ class ChatView extends StatelessWidget {
                                                   height: 36.h,
                                                   child: FlexText(
                                                     title: controller
-                                                        .serviceProviderModel[
-                                                            index]
-                                                        .userName,
+                                                        .chatModel[index]
+                                                        .serviceProviderName,
                                                     style: getRegularSalsaStyle(
                                                         color:
                                                             ColorManager.black,
@@ -186,18 +184,37 @@ class ChatView extends StatelessWidget {
                                                         ),
                                                       ),
                                                       Container(
-                                                        height: 23.h,
+                                                        height: 15.h,
                                                         alignment:
                                                             Alignment.topRight,
-                                                        child: FlexText(
-                                                          title: "xx",
-                                                          style: getRegularSalsaStyle(
-                                                              color:
-                                                                  ColorManager
-                                                                      .black,
-                                                              fontSize:
-                                                                  FontSize.s24),
-                                                        ),
+                                                        child: controller
+                                                                    .chatModel[
+                                                                        index]
+                                                                    .lastSender ==
+                                                                controller
+                                                                    .userModel
+                                                                    .userId
+                                                            ? Stack(
+                                                                children: [
+                                                                  Image.asset(
+                                                                      ImageStrings
+                                                                          .messageSent),
+                                                                  Container(
+                                                                      margin: EdgeInsets.only(
+                                                                          left: 9
+                                                                              .w),
+                                                                      child: Image.asset(
+                                                                          ImageStrings
+                                                                              .messageSent)),
+                                                                ],
+                                                              )
+                                                            : Stack(
+                                                                children: [
+                                                                  Image.asset(
+                                                                      ImageStrings
+                                                                          .messageSent),
+                                                                ],
+                                                              ),
                                                       ),
                                                     ],
                                                   ),

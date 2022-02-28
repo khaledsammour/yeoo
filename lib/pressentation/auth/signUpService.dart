@@ -11,6 +11,8 @@ import 'package:yeeo/pressentation/resource/stylesManager.dart';
 import 'package:yeeo/pressentation/resource/valuesManager.dart';
 import 'package:yeeo/pressentation/widget/flexText.dart';
 import 'package:yeeo/pressentation/widget/flexTextFiled.dart';
+import 'package:yeeo/pressentation/widget/imageBottomSheet.dart';
+import 'package:yeeo/pressentation/widget/locationBottomSheet.dart';
 
 class SignupServiceView extends StatelessWidget {
   const SignupServiceView({Key? key}) : super(key: key);
@@ -51,7 +53,7 @@ class SignupServiceView extends StatelessWidget {
                         decoration: const BoxDecoration(
                             image: DecorationImage(
                                 image: AssetImage(ImageStrings.bigPolygon),
-                                fit: BoxFit.fill)),
+                                fit: BoxFit.contain)),
                       ),
                       SizedBox(
                         height: 28.25.h,
@@ -65,14 +67,14 @@ class SignupServiceView extends StatelessWidget {
                           image: AssetImage(
                             ImageStrings.yeeo,
                           ),
-                          fit: BoxFit.fill,
+                          fit: BoxFit.contain,
                         )),
                       ),
                       SizedBox(
                         height: 73.h,
                       ),
                       _textFill(
-                        focusNode: controller.focusNode,
+                        validator: (p0) {},
                         title: "Company",
                         textInputType: TextInputType.name,
                         autofillHints: AutofillHints.username,
@@ -83,14 +85,43 @@ class SignupServiceView extends StatelessWidget {
                       SizedBox(
                         height: 24.h,
                       ),
-                      _textFill(
-                        focusNode: controller.focusNode,
-                        title: Strings.password,
-                        textInputType: TextInputType.visiblePassword,
-                        autofillHints: AutofillHints.password,
-                        onChanged: (vlaue) {
-                          controller.password = vlaue;
-                        },
+                      Container(
+                        margin: EdgeInsets.only(left: 27.w),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              height: 21.h,
+                              width: 88.w,
+                              child: FlexText(
+                                title: "Password",
+                                style:
+                                    getMPlus1cStyle(color: ColorManager.black),
+                              ),
+                            ),
+                            FlexTextFiled(
+                              validator: (value) {
+                                if (value!.length < 7) {
+                                  return 'Password must be at least 7 characters long';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              textInputType: TextInputType.visiblePassword,
+                              autofillHints: "",
+                              left: 15,
+                              onChanged: (v) {
+                                controller.password = v;
+                              },
+                              password: true,
+                              obscureText: controller.pass,
+                              onEyeTap: () {
+                                controller.pass = !controller.pass;
+                                controller.update();
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 22.h,
@@ -113,34 +144,30 @@ class SignupServiceView extends StatelessWidget {
                             SizedBox(
                               width: 15.w,
                             ),
-                            Container(
-                              height: 27.h,
-                              width: 199.w,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: ColorManager.black),
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20.r),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                        color: Colors.black26,
-                                        blurRadius: 6,
-                                        offset: Offset(0, 2))
-                                  ]),
-                              child: TextField(
-                                onChanged: (value) {
-                                  controller.password == value
-                                      ? controller.notSame = true
-                                      : controller.notSame = false;
-                                },
-                                style:
-                                    getMeduimStyle(color: ColorManager.black),
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 27 / 2.h, horizontal: 5.w),
-                                  hintStyle: TextStyle(color: Colors.black38),
-                                ),
-                              ),
+                            FlexTextFiled(
+                              validator: (p0) {
+                                if (controller.confirmPass !=
+                                    controller.password) {
+                                  return 'Password is not the same';
+                                } else {
+                                  null;
+                                }
+                              },
+                              onChanged: (value) {
+                                controller.password == value
+                                    ? controller.notSame = true
+                                    : controller.notSame = false;
+                              },
+                              autofillHints: "",
+                              textInputType: TextInputType.visiblePassword,
+                              left: 0,
+                              password: true,
+                              obscureText: controller.confirmPass,
+                              onEyeTap: () {
+                                controller.confirmPass =
+                                    !controller.confirmPass;
+                                controller.update();
+                              },
                             ),
                           ],
                         ),
@@ -149,7 +176,7 @@ class SignupServiceView extends StatelessWidget {
                         height: 7.h,
                       ),
                       _textFill(
-                        focusNode: controller.focusNode,
+                        validator: (p0) {},
                         title: "phone number",
                         textInputType: TextInputType.emailAddress,
                         autofillHints: AutofillHints.email,
@@ -161,7 +188,7 @@ class SignupServiceView extends StatelessWidget {
                         height: 22.h,
                       ),
                       _textFill(
-                        focusNode: controller.focusNode,
+                        validator: (p0) {},
                         title: "job title",
                         textInputType: TextInputType.emailAddress,
                         autofillHints: AutofillHints.email,
@@ -179,23 +206,14 @@ class SignupServiceView extends StatelessWidget {
                       SizedBox(
                         height: 14.h,
                       ),
-                      _plus(
+                      _companyLogo(
                         title: "company logo",
                         height: 69,
-                        onChanged: (vlaue) {
-                          controller.companyLogo = vlaue;
-                        },
                       ),
                       SizedBox(
                         height: 10.h,
                       ),
-                      _plus(
-                        title: "Location",
-                        height: 32,
-                        onChanged: (vlaue) {
-                          controller.phoneNumber = vlaue;
-                        },
-                      ),
+                      _location(),
                       SizedBox(
                         height: 23.h,
                       ),
@@ -282,39 +300,44 @@ class SignupServiceView extends StatelessWidget {
     return GetBuilder<AuthViewModel>(
         init: AuthViewModel(),
         builder: (controller) {
-          return InkWell(
-            onTap: onTap,
-            child: Container(
-              margin: EdgeInsets.only(left: 125.w),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 9.h,
-                    width: 27.w,
-                    decoration: BoxDecoration(
-                        color: type
-                            ? ColorManager.yellow
-                            : ColorManager.whiteWithOpecity1,
-                        border: Border.all(color: ColorManager.black),
-                        borderRadius: BorderRadius.circular(30.r)),
-                  ),
-                  SizedBox(
-                    width: 9.w,
-                  ),
-                  Container(
-                    height: 21.h,
-                    width: 127.w,
-                    child: AutoSizeText(
-                      title,
-                      textAlign: TextAlign.start,
-                      style: getMPlusStyle(color: ColorManager.black),
-                    ),
-                  ),
-                ],
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 125.w,
               ),
-            ),
+              InkWell(
+                onTap: onTap,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 9.h,
+                      width: 27.w,
+                      decoration: BoxDecoration(
+                          color: type
+                              ? ColorManager.yellow
+                              : ColorManager.whiteWithOpecity1,
+                          border: Border.all(color: ColorManager.black),
+                          borderRadius: BorderRadius.circular(30.r)),
+                    ),
+                    SizedBox(
+                      width: 9.w,
+                    ),
+                    Container(
+                      height: 21.h,
+                      width: 127.w,
+                      child: AutoSizeText(
+                        title,
+                        textAlign: TextAlign.start,
+                        style: getMPlusStyle(color: ColorManager.black),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           );
         });
   }
@@ -323,7 +346,7 @@ class SignupServiceView extends StatelessWidget {
       {String? title,
       TextInputType? textInputType,
       String? autofillHints,
-      required FocusNode focusNode,
+      required String? Function(String?)? validator,
       Function(String)? onChanged}) {
     return Container(
       margin: EdgeInsets.only(left: 27.w),
@@ -339,6 +362,7 @@ class SignupServiceView extends StatelessWidget {
             ),
           ),
           FlexTextFiled(
+            validator: validator,
             textInputType: textInputType!,
             autofillHints: autofillHints!,
             left: 15,
@@ -349,7 +373,7 @@ class SignupServiceView extends StatelessWidget {
     );
   }
 
-  Widget _plus({String? title, double? height, Function(String)? onChanged}) {
+  Widget _companyLogo({String? title, double? height}) {
     return GetBuilder<AuthViewModel>(builder: (controller) {
       return Container(
         margin: EdgeInsets.only(left: 27.w),
@@ -376,10 +400,26 @@ class SignupServiceView extends StatelessWidget {
                 child: controller.companyLogo == null
                     ? GestureDetector(
                         onTap: () {
-                          controller.getImageLogo();
-                          controller.update();
+                          Get.bottomSheet(ImageBottomSheet(
+                            onCameraTap: () {
+                              controller.getImageLogoFromCamera();
+                            },
+                            onGallaryTap: () {
+                              controller.getImageLogo();
+                            },
+                          ));
                         },
-                        child: Icon(Icons.plus_one_outlined))
+                        child: Container(
+                          height: 20.h,
+                          width: 22.w,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                  ImageStrings.addImage,
+                                ),
+                                fit: BoxFit.contain),
+                          ),
+                        ))
                     : Image.file(
                         File(
                           controller.companyLogo,
@@ -392,6 +432,76 @@ class SignupServiceView extends StatelessWidget {
         ),
       );
     });
+  }
+
+  _location() {
+    return GetBuilder<AuthViewModel>(
+        init: AuthViewModel(),
+        builder: (controller) {
+          return Container(
+            margin: EdgeInsets.only(left: 27.w),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: 21.h,
+                  width: 88.w,
+                  child: FlexText(
+                    title: "Location",
+                    style: getMPlus1cStyle(color: ColorManager.black),
+                  ),
+                ),
+                Container(
+                  height: 32.h,
+                  width: 80.w,
+                  margin: EdgeInsets.only(left: 21.w),
+                  decoration: BoxDecoration(
+                      color: ColorManager.filterItemColor,
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(30.r)),
+                  child: Center(
+                      child: GestureDetector(
+                          onTap: () {
+                            Get.dialog(LocationDialog(
+                              onTap: () {
+                                controller.latitude = latitude!;
+                                controller.longitude = longitude!;
+                                controller.getAddressFromLatLong();
+                                controller.update();
+                                Get.back();
+                                latitude = null;
+                                longitude = null;
+                              },
+                            ));
+                          },
+                          child: Container(
+                            height: 20.h,
+                            width: 22.w,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                    ImageStrings.addImage,
+                                  ),
+                                  fit: BoxFit.contain),
+                            ),
+                          ))),
+                ),
+                SizedBox(
+                  width: 20.w,
+                ),
+                controller.cityName == null
+                    ? Container(
+                        height: 0.h,
+                        width: 0.w,
+                      )
+                    : FlexText(
+                        title:
+                            controller.cityName! + "," + controller.areaName!,
+                        style: getMeduimStyle(color: ColorManager.black)),
+              ],
+            ),
+          );
+        });
   }
 
   Widget _tradeLicense({String? title, Function(String)? onChanged}) {
@@ -425,96 +535,11 @@ class SignupServiceView extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.bottomSheet(Container(
-                            decoration: BoxDecoration(
-                                color: ColorManager.whiteWithOpecity1),
-                            height:
-                                MediaQuery.of(context).copyWith().size.height *
-                                    .26,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(AppPadding.p12),
-                                  height: MediaQuery.of(context)
-                                          .copyWith()
-                                          .size
-                                          .height *
-                                      .05,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Select Image",
-                                        overflow: TextOverflow.visible,
-                                        style: getRegularSalsaStyle(
-                                            color: ColorManager.black,
-                                            fontSize: FontSize.s16),
-                                      ),
-                                      IconButton(
-                                          padding: EdgeInsets.all(0),
-                                          onPressed: () {
-                                            Get.back();
-                                          },
-                                          icon: Icon(Icons
-                                              .cancel_presentation_rounded))
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  height: MediaQuery.of(context)
-                                          .copyWith()
-                                          .size
-                                          .height *
-                                      .2,
-                                  child: Row(
-                                    children: [
-                                      Flexible(
-                                        flex: 10,
-                                        fit: FlexFit.tight,
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            controller.getImageFromCamera();
-
-                                            controller.update();
-                                          },
-                                          child: Container(
-                                            color: Colors.blueGrey,
-                                            child: Center(
-                                              child: Text(
-                                                "Camera",
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Spacer(
-                                        flex: 2,
-                                      ),
-                                      Flexible(
-                                        flex: 10,
-                                        fit: FlexFit.tight,
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            controller.getImage();
-                                            controller.update();
-                                          },
-                                          child: Container(
-                                            color: Colors.red,
-                                            child: Center(
-                                              child: Text(
-                                                "Gallary",
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )));
+                        Get.bottomSheet(ImageBottomSheet(onCameraTap: () {
+                          controller.getImageFromCamera();
+                        }, onGallaryTap: () {
+                          controller.getImage();
+                        }));
                       },
                       child: Container(
                         height: 20.h,
@@ -524,7 +549,7 @@ class SignupServiceView extends StatelessWidget {
                               image: AssetImage(
                                 ImageStrings.addImage,
                               ),
-                              fit: BoxFit.fill),
+                              fit: BoxFit.contain),
                         ),
                       ),
                     ),

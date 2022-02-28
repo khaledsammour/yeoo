@@ -262,7 +262,7 @@ class UserView extends StatelessWidget {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 57.w),
-                  height: 44.h,
+                  height: 50.h,
                   width: 260.w,
                   decoration: BoxDecoration(
                     border: Border.all(color: ColorManager.yellow, width: 2),
@@ -289,7 +289,7 @@ class UserView extends StatelessWidget {
                             ));
                           },
                           child: Container(
-                            height: 38.h,
+                            height: 40.h,
                             width: 38.w,
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -304,8 +304,7 @@ class UserView extends StatelessWidget {
                           width: 22.w,
                         ),
                         Container(
-                          margin: EdgeInsets.symmetric(vertical: 10.h),
-                          height: 24.h,
+                          height: 30.h,
                           width: 155.85.w,
                           child: ListView.builder(
                               itemCount: controller.img.length == null
@@ -329,8 +328,8 @@ class UserView extends StatelessWidget {
                                       child: Stack(
                                         children: [
                                           Container(
-                                            height: 24.h,
-                                            width: 21.85.w,
+                                            height: 30.h,
+                                            width: 24.w,
                                             decoration: BoxDecoration(
                                                 border: Border.all(
                                                     color: ColorManager.grey),
@@ -338,14 +337,11 @@ class UserView extends StatelessWidget {
                                                     BorderRadius.circular(3.r)),
                                             child: controller.imageFile == null
                                                 ? Text("no file")
-                                                : Hero(
-                                                    tag: index,
-                                                    child: Image.file(
-                                                      File(
-                                                        controller.img[index],
-                                                      ),
-                                                      fit: BoxFit.fill,
+                                                : Image.file(
+                                                    File(
+                                                      controller.img[index],
                                                     ),
+                                                    fit: BoxFit.fill,
                                                   ),
                                           ),
                                           controller.longPressed
@@ -381,8 +377,8 @@ class UserView extends StatelessWidget {
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 9,
-                                    )
+                                      width: 9.w,
+                                    ),
                                   ],
                                 );
                               }),
@@ -439,7 +435,7 @@ class UserView extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      height: 17.h,
+                      height: 20.h,
                       child: Row(
                         children: [
                           GestureDetector(
@@ -471,7 +467,7 @@ class UserView extends StatelessWidget {
                                 Container(
                                   width: 63.w,
                                   child: FlexText(
-                                    title: DateFormat('M/dd k:mm a')
+                                    title: DateFormat('yyyy/MM/dd\nk:mm a')
                                         .format(controller.availabilityFrom),
                                     style: getMeduimStyle(
                                         color: ColorManager.black,
@@ -499,7 +495,7 @@ class UserView extends StatelessWidget {
                             child: Row(
                               children: [
                                 Container(
-                                  width: 15.w,
+                                  width: 13.w,
                                   child: FlexText(
                                     title: HomeStrings.to,
                                     style: getMeduimStyle(
@@ -509,13 +505,12 @@ class UserView extends StatelessWidget {
                                 ),
                                 SizedBox(width: 1.w),
                                 Container(
-                                  width: 63.w,
                                   child: FlexText(
-                                    title: DateFormat('M/dd k:mm a')
+                                    title: DateFormat('yyyy/MM/dd\nk:mm a')
                                         .format(controller.availabilityTo),
                                     style: getMeduimStyle(
                                         color: ColorManager.black,
-                                        fontSize: FontSize.s10),
+                                        fontSize: FontSize.s17),
                                   ),
                                 ),
                               ],
@@ -581,7 +576,7 @@ class UserView extends StatelessWidget {
                                 child: FlexText(
                                   title: HomeStrings.aed,
                                   style: getMeduimStyle(
-                                    color: ColorManager.red,
+                                    color: ColorManager.black,
                                   ),
                                 ),
                               ),
@@ -615,7 +610,7 @@ class UserView extends StatelessWidget {
                                 child: FlexText(
                                   title: HomeStrings.aed,
                                   style: getMeduimStyle(
-                                    color: ColorManager.red,
+                                    color: ColorManager.black,
                                   ),
                                 ),
                               ),

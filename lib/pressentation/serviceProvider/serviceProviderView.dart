@@ -16,108 +16,113 @@ import 'package:yeeo/pressentation/user/jobModel.dart';
 import 'package:yeeo/pressentation/widget/availabilityBottomSheet.dart';
 import 'package:yeeo/pressentation/widget/budgetBottomSheet.dart';
 import 'package:yeeo/pressentation/widget/flexText.dart';
+import 'package:yeeo/pressentation/widget/imageBottomSheet.dart';
 import 'package:yeeo/pressentation/widget/loadingWidget.dart';
+
+import '../widget/PicView.dart';
 
 class ServiceProviderView extends StatelessWidget {
   const ServiceProviderView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: GetBuilder<ServiceProviderViewModel>(
+    return GetBuilder<ServiceProviderViewModel>(
         init: ServiceProviderViewModel(),
-        builder: (controller) => controller.loading.value
-            ? LoadingWidget()
-            : GestureDetector(
-                onTap: () => controller.focusNode.unfocus(),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 40.h,
-                      decoration: BoxDecoration(boxShadow: [_boxShadow()]),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              controller.likeSelected = false;
+        builder: (controller) {
+          return Scaffold(
+            body: controller.loading.value
+                ? LoadingWidget()
+                : GestureDetector(
+                    onTap: () => controller.focusNode.unfocus(),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 40.h,
+                          decoration: BoxDecoration(boxShadow: [_boxShadow()]),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  controller.likeSelected = false;
 
-                              controller.update();
-                            },
-                            child: Container(
-                              width: 267.w,
-                              decoration: BoxDecoration(
-                                color: controller.likeSelected
-                                    ? ColorManager.whiteWithOpecity1
-                                    : ColorManager.yellow,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'ALL',
-                                  style: getRegularSalsaStyle(
-                                      color: ColorManager.black,
-                                      fontSize: FontSize.s24),
+                                  controller.update();
+                                },
+                                child: Container(
+                                  width: 267.w,
+                                  decoration: BoxDecoration(
+                                    color: controller.likeSelected
+                                        ? ColorManager.whiteWithOpecity1
+                                        : ColorManager.yellow,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'ALL',
+                                      style: getRegularSalsaStyle(
+                                          color: ColorManager.black,
+                                          fontSize: FontSize.s24),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              controller.likeSelected = true;
-                              controller.update();
-                            },
-                            child: Container(
-                              width: 147.w,
-                              decoration: BoxDecoration(
-                                color: controller.likeSelected
-                                    ? ColorManager.yellow
-                                    : ColorManager.whiteWithOpecity1,
+                              GestureDetector(
+                                onTap: () {
+                                  controller.likeSelected = true;
+                                  controller.update();
+                                },
+                                child: Container(
+                                  width: 147.w,
+                                  decoration: BoxDecoration(
+                                    color: controller.likeSelected
+                                        ? ColorManager.yellow
+                                        : ColorManager.whiteWithOpecity1,
+                                  ),
+                                  child: Center(
+                                    child: Image.asset(ImageStrings.like),
+                                  ),
+                                ),
                               ),
-                              child: Center(
-                                child: Image.asset(ImageStrings.like),
-                              ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: 25.h,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            controller.filter
+                                ? controller.filter = false
+                                : controller.filter = true;
+                            controller.update();
+                          },
+                          child: Container(
+                              margin: EdgeInsets.only(left: 309.w),
+                              height: 28.h,
+                              width: 74.w,
+                              child: Image.asset(
+                                ImageStrings.filter,
+                                fit: BoxFit.contain,
+                              )),
+                        ),
+                        SizedBox(
+                          height: controller.opened || controller.filter
+                              ? 15.h
+                              : 0.h,
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: controller.likeSelected
+                              ? _likedServices()
+                              : _all(),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: 25.h,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        controller.filter
-                            ? controller.filter = false
-                            : controller.filter = true;
-                        controller.update();
-                      },
-                      child: Container(
-                          margin: EdgeInsets.only(left: 309.w),
-                          height: 28.h,
-                          width: 74.w,
-                          child: Image.asset(
-                            ImageStrings.filter,
-                            fit: BoxFit.fill,
-                          )),
-                    ),
-                    SizedBox(
-                      height:
-                          controller.opened || controller.filter ? 15.h : 0.h,
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child:
-                          controller.likeSelected ? _likedServices() : _all(),
-                    ),
-                  ],
-                ),
-              ),
-      ),
-    );
+                  ),
+          );
+        });
   }
 
   _all() {
-    return GetBuilder<ServiceProviderViewModel>(
+    return GetX<ServiceProviderViewModel>(
         init: ServiceProviderViewModel(),
         builder: (controller) {
           return SingleChildScrollView(
@@ -125,7 +130,7 @@ class ServiceProviderView extends StatelessWidget {
                 ? _filter()
                 : Column(
                     children: [
-                      controller.jobModelSwimming.length == 0
+                      controller.swimming.length == 0
                           ? SizedBox(
                               height: 0,
                             )
@@ -139,15 +144,14 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("swimming pool"),
                             ),
                       controller.opened
-                          ? _inventory(controller.jobModelSwimming,
-                              controller.userModelSwimming)
+                          ? _inventory(controller.swimming)
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.jobModelInsect.length == 0
+                      controller.insect.length == 0
                           ? SizedBox(
                               height: 0,
                             )
@@ -161,15 +165,14 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("insect."),
                             ),
                       controller.opened
-                          ? _inventory(controller.jobModelInsect,
-                              controller.userModelInsect)
+                          ? _inventory(controller.insect)
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.jobModelConst.length == 0
+                      controller.constr.length == 0
                           ? SizedBox(
                               height: 0,
                             )
@@ -183,15 +186,14 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("const."),
                             ),
                       controller.opened
-                          ? _inventory(controller.jobModelConst,
-                              controller.userModelConst)
+                          ? _inventory(controller.constr)
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.jobModelTech.length == 0
+                      controller.tech.length == 0
                           ? SizedBox(
                               height: 0,
                             )
@@ -205,15 +207,14 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("tech."),
                             ),
                       controller.opened
-                          ? _inventory(
-                              controller.jobModelTech, controller.userModelTech)
+                          ? _inventory(controller.tech)
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.jobModelLands.length == 0
+                      controller.lands.length == 0
                           ? SizedBox(
                               height: 0,
                             )
@@ -227,15 +228,14 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("lands"),
                             ),
                       controller.opened
-                          ? _inventory(controller.jobModelLands,
-                              controller.userModelLands)
+                          ? _inventory(controller.lands)
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.jobModelCarp.length == 0
+                      controller.carp.length == 0
                           ? SizedBox(
                               height: 0,
                             )
@@ -249,8 +249,7 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("carps."),
                             ),
                       controller.opened
-                          ? _inventory(
-                              controller.jobModelCarp, controller.userModelCarp)
+                          ? _inventory(controller.carp)
                           : SizedBox(
                               height: 1,
                             ),
@@ -272,29 +271,37 @@ class ServiceProviderView extends StatelessWidget {
                 ? _filter()
                 : Column(
                     children: [
-                      controller.likedJobModelSwimming.length == 0
+                      controller.swimming
+                                  .where((p0) => p0.like.contains(controller
+                                      .serviceProviderModel.serviceProviderId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
                           : GestureDetector(
                               onTap: () {
-                                controller.opened
-                                    ? controller.opened = false
-                                    : controller.opened = true;
+                                controller.opened = !controller.opened;
                                 controller.update();
                               },
                               child: _inventoryItem("swimming pool"),
                             ),
                       controller.opened
-                          ? _inventory(controller.likedJobModelSwimming,
-                              controller.userModelSwimming)
+                          ? _inventory(controller.swimming
+                              .where((p0) => p0.like.contains(controller
+                                  .serviceProviderModel.serviceProviderId))
+                              .toList())
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedJobModelInsect.length == 0
+                      controller.insect
+                                  .where((p0) => p0.like.contains(controller
+                                      .serviceProviderModel.serviceProviderId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -308,15 +315,21 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("insect."),
                             ),
                       controller.opened
-                          ? _inventory(controller.likedJobModelInsect,
-                              controller.userModelInsect)
+                          ? _inventory(controller.insect
+                              .where((p0) => p0.like.contains(controller
+                                  .serviceProviderModel.serviceProviderId))
+                              .toList())
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedJobModelConst.length == 0
+                      controller.constr
+                                  .where((p0) => p0.like.contains(controller
+                                      .serviceProviderModel.serviceProviderId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -330,15 +343,21 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("const."),
                             ),
                       controller.opened
-                          ? _inventory(controller.likedJobModelConst,
-                              controller.userModelConst)
+                          ? _inventory(controller.constr
+                              .where((p0) => p0.like.contains(controller
+                                  .serviceProviderModel.serviceProviderId))
+                              .toList())
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedJobModelTech.length == 0
+                      controller.tech
+                                  .where((p0) => p0.like.contains(controller
+                                      .serviceProviderModel.serviceProviderId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -352,15 +371,21 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("tech."),
                             ),
                       controller.opened
-                          ? _inventory(controller.likedJobModelTech,
-                              controller.userModelTech)
+                          ? _inventory(controller.tech
+                              .where((p0) => p0.like.contains(controller
+                                  .serviceProviderModel.serviceProviderId))
+                              .toList())
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedJobModelLands.length == 0
+                      controller.lands
+                                  .where((p0) => p0.like.contains(controller
+                                      .serviceProviderModel.serviceProviderId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -374,15 +399,21 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("lands"),
                             ),
                       controller.opened
-                          ? _inventory(controller.likedJobModelLands,
-                              controller.userModelLands)
+                          ? _inventory(controller.lands
+                              .where((p0) => p0.like.contains(controller
+                                  .serviceProviderModel.serviceProviderId))
+                              .toList())
                           : SizedBox(
                               height: 1,
                             ),
                       SizedBox(
                         height: 6.h,
                       ),
-                      controller.likedJobModelCarp.length == 0
+                      controller.carp
+                                  .where((p0) => p0.like.contains(controller
+                                      .serviceProviderModel.serviceProviderId))
+                                  .length ==
+                              0
                           ? SizedBox(
                               height: 0,
                             )
@@ -396,8 +427,10 @@ class ServiceProviderView extends StatelessWidget {
                               child: _inventoryItem("carps."),
                             ),
                       controller.opened
-                          ? _inventory(controller.likedJobModelCarp,
-                              controller.userModelCarp)
+                          ? _inventory(controller.carp
+                              .where((p0) => p0.like.contains(controller
+                                  .serviceProviderModel.serviceProviderId))
+                              .toList())
                           : SizedBox(
                               height: 1,
                             ),
@@ -584,7 +617,7 @@ class ServiceProviderView extends StatelessWidget {
     });
   }
 
-  _inventory(List<JobModel> jobModel, List<UserModel> userModel) {
+  _inventory(List<JobModel> jobModel) {
     return Builder(builder: (context) {
       return GetBuilder<ServiceProviderViewModel>(
           init: ServiceProviderViewModel(),
@@ -593,12 +626,17 @@ class ServiceProviderView extends StatelessWidget {
               children: List.generate(
                 jobModel.length,
                 (index) => jobModel[index].accepted == "true"
-                    ? _accepted(userModel[index], jobModel[index])
+                    ? _accepted(jobModel[index], () async {
+                        await controller.send(
+                          jobModel[index],
+                          jobModel[index].userId,
+                        );
+                      })
                     : jobModel[index].reported == "true"
-                        ? _reported(userModel[index].userName, jobModel[index])
+                        ? _reported(jobModel[index].userName, jobModel[index])
                         : Container(
                             margin: EdgeInsets.only(top: 19.h),
-                            height: 497.h,
+                            height: 520.h,
                             width: 382.w,
                             decoration: BoxDecoration(
                                 color: ColorManager.textBackground,
@@ -636,7 +674,7 @@ class ServiceProviderView extends StatelessWidget {
                                         width: 152.w,
                                         margin: EdgeInsets.only(bottom: 5.h),
                                         child: FlexText(
-                                          title: userModel[index].userName,
+                                          title: jobModel[index].userName,
                                           style: getRegularSalsaStyle(
                                               color: ColorManager.black,
                                               fontSize: FontSize.s36),
@@ -705,19 +743,35 @@ class ServiceProviderView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: List.generate(
                                         jobModel[index].images.length,
-                                        (indexR) => Container(
-                                              height: 24.h,
-                                              width: 21.85.w,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color:
-                                                          ColorManager.grey)),
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 10.h,
-                                                  horizontal: 5.w),
-                                              child: Image.network(
-                                                jobModel[index].images[indexR],
-                                                fit: BoxFit.fill,
+                                        (indexR) => GestureDetector(
+                                              onTap: () {
+                                                GlobalKey<NavigatorState>? key;
+                                                Get.dialog(
+                                                    PicView(
+                                                      file: false,
+                                                      itemCount: jobModel[index]
+                                                          .images
+                                                          .length,
+                                                      path: jobModel[index]
+                                                          .images,
+                                                    ),
+                                                    navigatorKey: key);
+                                              },
+                                              child: Container(
+                                                height: 24.h,
+                                                width: 21.85.w,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color:
+                                                            ColorManager.grey)),
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 10.h,
+                                                    horizontal: 5.w),
+                                                child: Image.network(
+                                                  jobModel[index]
+                                                      .images[indexR],
+                                                  fit: BoxFit.fill,
+                                                ),
                                               ),
                                             )),
                                   ),
@@ -725,44 +779,41 @@ class ServiceProviderView extends StatelessWidget {
                                 SizedBox(
                                   height: 23.h,
                                 ),
-                                _budget(
-                                  ImageStrings.avavilability,
-                                  HomeStrings.availability,
-                                  "From: " +
-                                      DateFormat('M/dd k:mm a').format(
-                                        DateTime.parse(
-                                          jobModel[index].availabilityFrom,
-                                        ),
-                                      ) +
-                                      " To: " +
-                                      DateFormat('M/dd k:mm a').format(
-                                        DateTime.parse(
-                                          jobModel[index].availabilityTo,
-                                        ),
-                                      ),
-                                ),
                                 SizedBox(
-                                  height: 10.h,
-                                ),
-                                SizedBox(
-                                  height: 15.h,
+                                  height: 25.h,
                                   child: _budget(
-                                    ImageStrings.budget,
-                                    HomeStrings.budget,
-                                    "From: " +
-                                        jobModel[index].budgetFrom +
-                                        " AED" +
-                                        " To: " +
-                                        jobModel[index].budgetTo +
-                                        " AED",
+                                    ImageStrings.avavilability,
+                                    HomeStrings.availability,
+                                    DateFormat('yyyy/MM/dd\nk:mm a').format(
+                                      DateTime.parse(
+                                        jobModel[index].availabilityFrom,
+                                      ),
+                                    ),
+                                    DateFormat('yyyy/MM/dd\nk:mm a').format(
+                                      DateTime.parse(
+                                        jobModel[index].availabilityTo,
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
                                   height: 10.h,
                                 ),
                                 SizedBox(
-                                  height: 15.h,
+                                  height: 25.h,
                                   child: _budget(
+                                    ImageStrings.budget,
+                                    HomeStrings.budget,
+                                    jobModel[index].budgetFrom + " AED",
+                                    jobModel[index].budgetTo + " AED",
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10.h,
+                                ),
+                                SizedBox(
+                                  height: 25.h,
+                                  child: _location(
                                       ImageStrings.location,
                                       HomeStrings.location,
                                       jobModel[index].location),
@@ -941,14 +992,14 @@ class ServiceProviderView extends StatelessWidget {
     );
   }
 
-  _accepted(UserModel userModel, JobModel jobModel) {
+  _accepted(JobModel jobModel, Function()? onTap) {
     return Builder(builder: (context) {
       return GetBuilder<ServiceProviderViewModel>(
           init: ServiceProviderViewModel(),
           builder: (controller) {
             return Container(
               margin: EdgeInsets.only(top: 25.h),
-              height: 477.h,
+              height: 510.h,
               width: 343.w,
               decoration: BoxDecoration(
                   color: ColorManager.primary,
@@ -1036,106 +1087,14 @@ class ServiceProviderView extends StatelessWidget {
                                 GestureDetector(
                                   onTap: () {
                                     controller.focusNode.unfocus();
-                                    Get.bottomSheet(Container(
-                                        decoration: BoxDecoration(
-                                            color:
-                                                ColorManager.whiteWithOpecity1),
-                                        height: MediaQuery.of(context)
-                                                .copyWith()
-                                                .size
-                                                .height *
-                                            .26,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              padding: EdgeInsets.all(
-                                                  AppPadding.p12),
-                                              height: MediaQuery.of(context)
-                                                      .copyWith()
-                                                      .size
-                                                      .height *
-                                                  .05,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "Select Image",
-                                                    overflow:
-                                                        TextOverflow.visible,
-                                                    style: getRegularSalsaStyle(
-                                                        color:
-                                                            ColorManager.black,
-                                                        fontSize: FontSize.s16),
-                                                  ),
-                                                  IconButton(
-                                                      padding:
-                                                          EdgeInsets.all(0),
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
-                                                      icon: Icon(Icons
-                                                          .cancel_presentation_rounded))
-                                                ],
-                                              ),
-                                            ),
-                                            Container(
-                                              height: MediaQuery.of(context)
-                                                      .copyWith()
-                                                      .size
-                                                      .height *
-                                                  .2,
-                                              child: Row(
-                                                children: [
-                                                  Flexible(
-                                                    flex: 10,
-                                                    fit: FlexFit.tight,
-                                                    child: GestureDetector(
-                                                      onTap: () async {
-                                                        controller
-                                                            .getImageFromCamera();
-
-                                                        controller.update();
-                                                      },
-                                                      child: Container(
-                                                        color: Colors.blueGrey,
-                                                        child: Center(
-                                                          child: Text(
-                                                            "Camera",
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Spacer(
-                                                    flex: 2,
-                                                  ),
-                                                  Flexible(
-                                                    flex: 10,
-                                                    fit: FlexFit.tight,
-                                                    child: GestureDetector(
-                                                      onTap: () async {
-                                                        controller.getImage();
-                                                        controller.update();
-                                                      },
-                                                      child: Container(
-                                                        color: Colors.red,
-                                                        child: Center(
-                                                          child: Text(
-                                                            "Gallary",
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        )));
+                                    Get.bottomSheet(
+                                        ImageBottomSheet(onCameraTap: () {
+                                      controller.getImageFromCamera();
+                                      controller.update();
+                                    }, onGallaryTap: () {
+                                      controller.getImage();
+                                      controller.update();
+                                    }));
                                   },
                                   child: Container(
                                     height: 38.h,
@@ -1214,23 +1173,53 @@ class ServiceProviderView extends StatelessWidget {
                                 Get.bottomSheet(Container(
                                   height:
                                       MediaQuery.of(context).size.height * .3,
-                                  color: ColorManager.yellow,
+                                  color: ColorManager.primary,
                                   child: Column(
                                     children: [
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .1,
-                                      ),
                                       Container(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 .1,
-                                        child: TextField(
-                                          onChanged: (value) {
-                                            controller.duration = value;
-                                            controller.update();
-                                          },
+                                        child: Row(
+                                          children: [
+                                            FlexText(
+                                                title: "choose duration",
+                                                style: getBoldStyle(
+                                                    color: ColorManager.black))
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .2),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                .1,
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: 100.w,
+                                              child: FlexText(
+                                                  title: "Duration",
+                                                  style: getBoldStyle(
+                                                      color:
+                                                          ColorManager.black)),
+                                            ),
+                                            Container(
+                                              width: 100.w,
+                                              child: TextField(
+                                                decoration: InputDecoration(
+                                                    hintText: "x days"),
+                                                onChanged: (value) {
+                                                  controller.duration = value;
+                                                  controller.update();
+                                                },
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -1274,13 +1263,10 @@ class ServiceProviderView extends StatelessWidget {
                           child: _budget(
                               ImageStrings.avavilability,
                               "Timing",
-                              "From: " +
-                                  DateFormat('M/dd k:mm a')
-                                      .format(controller.availabilityFrom!) +
-                                  " - " +
-                                  "To: " +
-                                  DateFormat('M/dd k:mm a')
-                                      .format(controller.availabilityTo!)),
+                              DateFormat('yyyy/MM/dd\nk:mm a')
+                                  .format(controller.availabilityFrom!),
+                              DateFormat('yyyy/MM/dd\nk:mm a')
+                                  .format(controller.availabilityTo!)),
                         ),
                         SizedBox(
                           height: 12.h,
@@ -1303,16 +1289,13 @@ class ServiceProviderView extends StatelessWidget {
                           child: _budget(
                               ImageStrings.budget,
                               "Budget",
-                              controller.budgetFrom! +
-                                  " AED" +
-                                  "-" +
-                                  controller.budgetTo! +
-                                  " AEd"),
+                              controller.budgetFrom! + " AED",
+                              controller.budgetTo! + " AEd"),
                         ),
                         SizedBox(
                           height: 12.h,
                         ),
-                        _budget(ImageStrings.location, "location",
+                        _location(ImageStrings.location, "location",
                             controller.serviceProviderModel.location),
                         SizedBox(
                           height: 10.h,
@@ -1333,15 +1316,12 @@ class ServiceProviderView extends StatelessWidget {
                                         borderRadius:
                                             BorderRadius.circular(30.r)),
                                     child: GestureDetector(
-                                      onTap: () {
-                                        index == 1
-                                            ? controller.send(
-                                                jobModel,
-                                                userModel.userId,
-                                              )
-                                            : Get.bottomSheet(_review(
-                                                userModel.userName, jobModel));
-                                      },
+                                      onTap: index == 1
+                                          ? onTap
+                                          : () {
+                                              Get.bottomSheet(_review(
+                                                  jobModel.userName, jobModel));
+                                            },
                                       child: Container(
                                         height: 17.h,
                                         width: 65.75.w,
@@ -1363,25 +1343,25 @@ class ServiceProviderView extends StatelessWidget {
     });
   }
 
-  _budget(String image, String name, String value) {
+  _location(String image, String name, String location) {
     return Row(
       children: [
         SizedBox(
           width: 84.w,
         ),
         Container(
-          height: 17.h,
+          height: 25.h,
           width: 15.w,
           child: Image.asset(
             image,
-            fit: BoxFit.fill,
+            fit: BoxFit.contain,
           ),
         ),
         SizedBox(
           width: 7.w,
         ),
         Container(
-          height: 17.h,
+          height: 25.h,
           width: 60.w,
           child: FlexText(
             title: name,
@@ -1389,10 +1369,10 @@ class ServiceProviderView extends StatelessWidget {
           ),
         ),
         Container(
-          height: 17.h,
+          height: 25.h,
           width: 160.w,
           child: FlexText(
-            title: value,
+            title: location,
             style: getRegularSalsaStyle(color: ColorManager.black),
           ),
         ),
@@ -1400,166 +1380,253 @@ class ServiceProviderView extends StatelessWidget {
     );
   }
 
+  _budget(String image, String name, String from, String to) {
+    return Container(
+      height: 25.h,
+      child: Row(
+        children: [
+          SizedBox(
+            width: 84.w,
+          ),
+          Container(
+            width: 15.w,
+            child: Image.asset(
+              image,
+              fit: BoxFit.contain,
+            ),
+          ),
+          SizedBox(
+            width: 7.w,
+          ),
+          Container(
+            width: 60.w,
+            child: FlexText(
+              title: name,
+              style: getRegularSalsaStyle(color: ColorManager.black),
+            ),
+          ),
+          Container(
+            height: 18.h,
+            width: 32.w,
+            alignment: Alignment.centerLeft,
+            child: FlexText(
+              title: "From: ",
+              style: getRegularSalsaStyle(color: ColorManager.black),
+            ),
+          ),
+          Container(
+            alignment: Alignment.centerLeft,
+            height: 25.h,
+            width: 50.w,
+            child: FlexText(
+              title: from,
+              style: getRegularSalsaStyle(color: ColorManager.black),
+            ),
+          ),
+          Container(
+            height: 18.h,
+            width: 16.w,
+            alignment: Alignment.centerLeft,
+            child: FlexText(
+              title: "To: ",
+              style: getRegularSalsaStyle(color: ColorManager.black),
+            ),
+          ),
+          Container(
+            height: 25.h,
+            width: 50.w,
+            alignment: Alignment.centerLeft,
+            child: FlexText(
+              title: to,
+              style: getRegularSalsaStyle(color: ColorManager.black),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   _review(String userName, JobModel jobModel) {
     return GetBuilder<ServiceProviderViewModel>(builder: (controller) {
-      return Container(
-        margin: EdgeInsets.only(top: 19.h),
-        height: 497.h,
-        width: 382.w,
-        decoration: BoxDecoration(
-            color: ColorManager.textBackground,
-            border: Border.all(
-              width: 4.w,
-              color: ColorManager.yellow,
-            ),
-            borderRadius: BorderRadius.circular(90.r),
-            boxShadow: [_boxShadow()]),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 24.h,
-            ),
-            Container(
-              height: 38.h,
-              width: 242.w,
-              margin: EdgeInsets.only(left: 60.w),
+      return Stack(
+        children: [
+          Positioned(
+            left: 15,
+            child: Container(
+              height: 497.h,
+              width: 382.w,
               decoration: BoxDecoration(
-                  color: ColorManager.filterItemColor,
-                  border: Border.all(color: ColorManager.black),
-                  boxShadow: [_boxShadow()],
-                  borderRadius: BorderRadius.circular(30.r)),
-              alignment: Alignment.bottomLeft,
-              child: Row(
+                  color: ColorManager.textBackground,
+                  border: Border.all(
+                    width: 4.w,
+                    color: ColorManager.yellow,
+                  ),
+                  borderRadius: BorderRadius.circular(90.r),
+                  boxShadow: [_boxShadow()]),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 19.w,
+                    height: 24.h,
                   ),
                   Container(
-                    width: 152.w,
-                    margin: EdgeInsets.only(bottom: 5.h),
-                    child: FlexText(
-                      title: userName,
-                      style: getRegularSalsaStyle(
-                          color: ColorManager.black, fontSize: FontSize.s36),
-                    ),
-                  ),
-                  Container(
-                    height: 26.h,
-                    width: 63.w,
+                    height: 38.h,
+                    width: 242.w,
+                    margin: EdgeInsets.only(left: 60.w),
                     decoration: BoxDecoration(
-                      color: ColorManager.well,
-                      borderRadius: BorderRadius.circular(90),
+                        color: ColorManager.filterItemColor,
+                        border: Border.all(color: ColorManager.black),
+                        boxShadow: [_boxShadow()],
+                        borderRadius: BorderRadius.circular(30.r)),
+                    alignment: Alignment.bottomLeft,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 19.w,
+                        ),
+                        Container(
+                          width: 152.w,
+                          margin: EdgeInsets.only(bottom: 5.h),
+                          child: FlexText(
+                            title: userName,
+                            style: getRegularSalsaStyle(
+                                color: ColorManager.black,
+                                fontSize: FontSize.s36),
+                          ),
+                        ),
+                        Container(
+                          height: 26.h,
+                          width: 63.w,
+                          decoration: BoxDecoration(
+                            color: ColorManager.well,
+                            borderRadius: BorderRadius.circular(90),
+                          ),
+                          child: Center(
+                            child: FlexText(
+                              title: "well",
+                              style: getRegularSalsaStyle(
+                                  color: ColorManager.black,
+                                  fontSize: FontSize.s18),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    child: Center(
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Container(
+                    height: 205.h,
+                    width: 344.w,
+                    margin: EdgeInsets.only(left: 17.w),
+                    decoration: BoxDecoration(
+                        color: ColorManager.primary,
+                        border: Border.all(color: ColorManager.yellow),
+                        boxShadow: [_boxShadow()],
+                        borderRadius: BorderRadius.circular(30.r)),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: 47.w, vertical: 22.h),
                       child: FlexText(
-                        title: "well",
-                        style: getRegularSalsaStyle(
-                            color: ColorManager.black, fontSize: FontSize.s18),
+                        title: jobModel.jobDetail,
+                        style: getMPlus1cStyle(
+                            color: ColorManager.black, fontSize: FontSize.s24),
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  Container(
+                    height: 44.h,
+                    width: 331.w,
+                    margin: EdgeInsets.only(left: 25.w),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2.w,
+                          color: ColorManager.lightBlue,
+                        ),
+                        borderRadius: BorderRadius.circular(30.r)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                          jobModel.images.length,
+                          (indexR) => Container(
+                                height: 24.h,
+                                width: 21.85.w,
+                                decoration: BoxDecoration(
+                                    border:
+                                        Border.all(color: ColorManager.grey)),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 10.h, horizontal: 5.w),
+                                child: Image.network(
+                                  jobModel.images[indexR],
+                                  fit: BoxFit.fill,
+                                ),
+                              )),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 23.h,
+                  ),
+                  _budget(
+                    ImageStrings.avavilability,
+                    HomeStrings.availability,
+                    DateFormat('M/dd k:mm a').format(
+                      DateTime.parse(
+                        jobModel.availabilityFrom,
+                      ),
+                    ),
+                    DateFormat('M/dd k:mm a').format(
+                      DateTime.parse(
+                        jobModel.availabilityTo,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  SizedBox(
+                    height: 15.h,
+                    child: _budget(
+                        ImageStrings.budget,
+                        HomeStrings.budget,
+                        jobModel.budgetFrom + " AED",
+                        jobModel.budgetTo + " AED"),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  SizedBox(
+                    height: 15.h,
+                    child: _location(ImageStrings.location,
+                        HomeStrings.location, jobModel.location),
+                  ),
+                  SizedBox(
+                    height: 18.h,
                   ),
                 ],
               ),
             ),
-            SizedBox(
-              height: 10.h,
-            ),
-            Container(
-              height: 205.h,
-              width: 344.w,
-              margin: EdgeInsets.only(left: 17.w),
-              decoration: BoxDecoration(
-                  color: ColorManager.primary,
-                  border: Border.all(color: ColorManager.yellow),
-                  boxShadow: [_boxShadow()],
-                  borderRadius: BorderRadius.circular(30.r)),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 47.w, vertical: 22.h),
-                child: FlexText(
-                  title: jobModel.jobDetail,
-                  style: getMPlus1cStyle(
-                      color: ColorManager.black, fontSize: FontSize.s24),
+          ),
+          Positioned(
+              top: 15,
+              right: 15,
+              child: GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: Container(
+                  height: 50.h,
+                  width: 50.w,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle, border: Border.all()),
+                  child: Icon(Icons.clear_outlined),
                 ),
-              ),
-            ),
-            SizedBox(
-              height: 15.h,
-            ),
-            Container(
-              height: 44.h,
-              width: 331.w,
-              margin: EdgeInsets.only(left: 25.w),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 2.w,
-                    color: ColorManager.lightBlue,
-                  ),
-                  borderRadius: BorderRadius.circular(30.r)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                    jobModel.images.length,
-                    (indexR) => Container(
-                          height: 24.h,
-                          width: 21.85.w,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: ColorManager.grey)),
-                          margin: EdgeInsets.symmetric(
-                              vertical: 10.h, horizontal: 5.w),
-                          child: Image.network(
-                            jobModel.images[indexR],
-                            fit: BoxFit.fill,
-                          ),
-                        )),
-              ),
-            ),
-            SizedBox(
-              height: 23.h,
-            ),
-            _budget(
-              ImageStrings.avavilability,
-              HomeStrings.availability,
-              "From: " +
-                  DateFormat('M/dd k:mm a').format(
-                    DateTime.parse(
-                      jobModel.availabilityFrom,
-                    ),
-                  ) +
-                  " To:" +
-                  DateFormat('M/dd k:mm a').format(
-                    DateTime.parse(
-                      jobModel.availabilityTo,
-                    ),
-                  ),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            SizedBox(
-              height: 15.h,
-              child: _budget(
-                  ImageStrings.budget,
-                  HomeStrings.budget,
-                  controller
-                          .getBudget(jobModel.budgetFrom, jobModel.budgetTo)
-                          .toString() +
-                      " AED"),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            SizedBox(
-              height: 15.h,
-              child: _budget(ImageStrings.location, HomeStrings.location,
-                  jobModel.location),
-            ),
-            SizedBox(
-              height: 18.h,
-            ),
-          ],
-        ),
+              )),
+        ],
       );
     });
   }

@@ -11,29 +11,17 @@ class ChatDetailViewModel extends GetxController {
   });
   ValueNotifier<bool> get loading => _loading;
   ValueNotifier<bool> _loading = ValueNotifier(false);
-  List<MessageModel> get messageModel => _messageModel;
-  List<MessageModel> _messageModel = [];
+  RxList<MessageModel> messageModel = RxList([]);
+
   String? message;
   ChatModel? chatModel;
   TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
 
   @override
-  void onInit() async {
-    super.onInit();
-    await getMessage(chatModel!.chatId);
-  }
-
-  getMessage(chatId) async {
-    _loading.value = true;
-    await FireStoreChat().getMessages(chatId).then((value) {
-      for (int i = 0; i < value.length; i++) {
-        _messageModel.add(MessageModel.fromJson(value[i].data()));
-
-        _loading.value = false;
-        update();
-      }
-    });
+  void onReady() async {
+    super.onReady();
+    messageModel.bindStream(FireStoreChat().getMessages(chatModel!.chatId));
   }
 
   void sendMessage(chatId, uid) async {
@@ -47,8 +35,7 @@ class ChatDetailViewModel extends GetxController {
     await FireStoreChat().addMessage(chatId, messageModel.toJson());
     await FireStoreChat().editChat(chatId, messageModel.timeStamp,
         messageModel.message, messageModel.sender);
-    _messageModel.clear();
-    getMessage(chatId);
+    
     message = null;
     update();
   }

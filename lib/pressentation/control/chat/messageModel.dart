@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class MessageModel {
   late String sender, message, timeStamp, read;
   MessageModel({
@@ -6,16 +8,12 @@ class MessageModel {
     required this.timeStamp,
   });
 
-  MessageModel.fromJson(Map<dynamic, dynamic> map) {
-    if (map == null) {
-      return;
-    }
+  MessageModel.fromJson(DocumentSnapshot documentSnapshot) {
+    sender = documentSnapshot['sender'];
 
-    sender = map['sender'];
-
-    message = map['message'];
-    timeStamp = map['timeStamp'];
-    read = map['read'];
+    message = documentSnapshot['message'];
+    timeStamp = documentSnapshot['timeStamp'];
+    read = documentSnapshot['read'];
   }
   toJson() {
     return {

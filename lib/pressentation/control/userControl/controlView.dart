@@ -10,6 +10,8 @@ import 'package:yeeo/pressentation/resource/colorManager.dart';
 import 'package:yeeo/pressentation/resource/stringsManager.dart';
 import 'package:yeeo/pressentation/resource/stylesManager.dart';
 import 'package:yeeo/pressentation/resource/valuesManager.dart';
+import 'package:yeeo/pressentation/user/inventoryView.dart';
+import 'package:yeeo/pressentation/user/userView.dart';
 import 'package:yeeo/pressentation/widget/flexText.dart';
 
 import 'controlViewModel.dart';
@@ -85,18 +87,9 @@ class ControlView extends StatelessWidget {
                     margin: EdgeInsets.only(right: 6.r),
                     height: 29.42.h,
                     width: 34.85.w,
-                    child: Column(
-                      children: [
-                        FlexText(
-                            title: "105",
-                            style: getMPlus1cStyle(
-                                color: ColorManager.red,
-                                fontSize: FontSize.s10)),
-                        Image.asset(
-                          ImageStrings.messagePolygon,
-                          fit: BoxFit.fill,
-                        ),
-                      ],
+                    child: Image.asset(
+                      ImageStrings.messagePolygon,
+                      fit: BoxFit.contain,
                     )),
               );
             }),
@@ -107,40 +100,87 @@ class ControlView extends StatelessWidget {
   Widget bottomNavigatorBar() {
     return GetBuilder<ControlViewModel>(
       init: ControlViewModel(),
-      builder: (controller) => Container(
-        height: 55.h,
-        child: BottomNavigationBar(
-            items: [
-              BottomNavigationBarItem(
-                  icon: Container(
-                    height: 34.h,
-                    width: 27.w,
-                    child: Image.asset(
-                      controller.navigatorValue == 0
-                          ? ImageStrings.addEnabled
-                          : ImageStrings.addDisable,
-                      fit: BoxFit.fill,
+      builder: (controller) => Builder(builder: (context) {
+        return Container(
+          height: 60.h,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 75.w,
+              ),
+              GestureDetector(
+                onTap: () {
+                  controller.changeSelectedValue(0);
+                  controller.update();
+                },
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 14.h,
                     ),
-                  ),
-                  title: Container(height: 0.0)),
-              BottomNavigationBarItem(
-                  icon: Container(
-                    height: 25.81.h,
-                    width: 42.w,
-                    child: Image.asset(
-                      controller.navigatorValue == 1
-                          ? ImageStrings.historyEnable
-                          : ImageStrings.historyDisable,
-                      fit: BoxFit.fill,
+                    Container(
+                      height: 34.h,
+                      width: 27.w,
+                      child: Image.asset(
+                        controller.navigatorValue == 0
+                            ? ImageStrings.addEnabled
+                            : ImageStrings.addDisable,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
-                  title: Container(height: 0.0)),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                    Container(
+                      height: 3.h,
+                      width: 20.w,
+                      color: controller.navigatorValue == 0
+                          ? ColorManager.yellow
+                          : ColorManager.primary,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: 178.w,
+              ),
+              GestureDetector(
+                onTap: () {
+                  controller.changeSelectedValue(1);
+                  controller.update();
+                },
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 14.h,
+                    ),
+                    Container(
+                      height: 25.81.h,
+                      width: 42.w,
+                      child: Image.asset(
+                        controller.navigatorValue == 1
+                            ? ImageStrings.historyEnable
+                            : ImageStrings.historyDisable,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 12.h,
+                    ),
+                    Container(
+                      height: 3.h,
+                      width: 20.w,
+                      color: controller.navigatorValue == 0
+                          ? ColorManager.primary
+                          : ColorManager.yellow,
+                    ),
+                  ],
+                ),
+              ),
             ],
-            backgroundColor: ColorManager.primary,
-            elevation: 0,
-            currentIndex: controller.navigatorValue,
-            onTap: (index) => controller.changeSelectedValue(index)),
-      ),
+          ),
+        );
+      }),
     );
   }
 }

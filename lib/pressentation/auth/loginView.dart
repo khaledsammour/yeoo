@@ -1,17 +1,13 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:yeeo/pressentation/auth/authViewModel.dart';
-import 'package:yeeo/pressentation/auth/loading.dart';
 import 'package:yeeo/pressentation/auth/signUpService.dart';
 import 'package:yeeo/pressentation/auth/signupView.dart';
-import 'package:yeeo/pressentation/control/userControl/controlView.dart';
 import 'package:yeeo/pressentation/resource/colorManager.dart';
 import 'package:yeeo/pressentation/resource/stringsManager.dart';
 import 'package:yeeo/pressentation/resource/stylesManager.dart';
 import 'package:yeeo/pressentation/resource/valuesManager.dart';
-import 'package:yeeo/pressentation/user/userView.dart';
 import 'package:yeeo/pressentation/widget/flexText.dart';
 import 'package:yeeo/pressentation/widget/flexTextFiled.dart';
 
@@ -223,6 +219,7 @@ class LoginView extends StatelessWidget {
                       height: 3.h,
                     ),
                     FlexTextFiled(
+                      validator: (p0) {},
                       textInputType: TextInputType.name,
                       autofillHints: AutofillHints.username,
                       left: 99,
@@ -234,6 +231,7 @@ class LoginView extends StatelessWidget {
                       height: 8.h,
                     ),
                     FlexTextFiled(
+                      validator: (p0) {},
                       textInputType: TextInputType.visiblePassword,
                       autofillHints: AutofillHints.password,
                       left: 99,

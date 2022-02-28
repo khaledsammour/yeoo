@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:yeeo/pressentation/control/chat/chatDetailView.dart';
 import 'package:yeeo/pressentation/control/serviceProviderControl/chat/chatDetailServiceProviderView.dart';
 import 'package:yeeo/pressentation/control/serviceProviderControl/chat/serviceProviderChatViewModel.dart';
 import 'package:yeeo/pressentation/control/serviceProviderControl/controlViewModelService.dart';
-import 'package:yeeo/pressentation/control/userControl/chat/chatViewModel.dart';
-import 'package:yeeo/pressentation/control/userControl/controlViewModel.dart';
 import 'package:yeeo/pressentation/resource/colorManager.dart';
-import 'package:yeeo/pressentation/resource/stringsManager.dart';
 import 'package:yeeo/pressentation/resource/stylesManager.dart';
 import 'package:yeeo/pressentation/resource/valuesManager.dart';
 import 'package:yeeo/pressentation/widget/flexText.dart';
 import 'package:yeeo/pressentation/widget/flexTextFiled.dart';
 import 'package:yeeo/pressentation/widget/loadingWidget.dart';
+
+import '../../../resource/stringsManager.dart';
 
 class ServiceProviderChatView extends StatelessWidget {
   const ServiceProviderChatView({
@@ -25,7 +23,7 @@ class ServiceProviderChatView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.primary,
-      body: GetBuilder<ServiceProviderChatViewModel>(
+      body: GetX<ServiceProviderChatViewModel>(
           init: ServiceProviderChatViewModel(),
           builder: (controller) {
             return Column(
@@ -59,6 +57,7 @@ class ServiceProviderChatView extends StatelessWidget {
                             color: ColorManager.black, fontSize: FontSize.s24),
                       ),
                       FlexTextFiled(
+                          validator: (p0) {},
                           width: 256,
                           textInputType: TextInputType.text,
                           autofillHints: AutofillHints.name,
@@ -84,12 +83,8 @@ class ServiceProviderChatView extends StatelessWidget {
                                         onTap: () {
                                           controlControlller.currentScreen =
                                               ChatDetailServiceProviderView(
-                                            serviceProviderModel:
-                                                controller.serviceProviderModel,
                                             chatModel:
                                                 controller.chatModel[index],
-                                            userModel:
-                                                controller.userModel[index],
                                           );
                                           controlControlller.update();
                                         },
@@ -128,7 +123,7 @@ class ServiceProviderChatView extends StatelessWidget {
                                                       height: 36.h,
                                                       child: FlexText(
                                                         title: controller
-                                                            .userModel[index]
+                                                            .chatModel[index]
                                                             .userName,
                                                         style:
                                                             getRegularSalsaStyle(
@@ -197,19 +192,34 @@ class ServiceProviderChatView extends StatelessWidget {
                                                             ),
                                                           ),
                                                           Container(
-                                                            height: 23.h,
+                                                            height: 15.h,
                                                             alignment: Alignment
                                                                 .topRight,
-                                                            child: FlexText(
-                                                              title: "xx",
-                                                              style: getRegularSalsaStyle(
-                                                                  color:
-                                                                      ColorManager
-                                                                          .black,
-                                                                  fontSize:
-                                                                      FontSize
-                                                                          .s24),
-                                                            ),
+                                                            child: controller
+                                                                        .chatModel[
+                                                                            index]
+                                                                        .lastSender ==
+                                                                    controller
+                                                                        .serviceProviderModel
+                                                                        .serviceProviderId
+                                                                ? Stack(
+                                                                    children: [
+                                                                      Image.asset(
+                                                                          ImageStrings
+                                                                              .messageSent),
+                                                                      Container(
+                                                                          margin:
+                                                                              EdgeInsets.only(left: 9.w),
+                                                                          child: Image.asset(ImageStrings.messageSent)),
+                                                                    ],
+                                                                  )
+                                                                : Stack(
+                                                                    children: [
+                                                                      Image.asset(
+                                                                          ImageStrings
+                                                                              .messageSent),
+                                                                    ],
+                                                                  ),
                                                           ),
                                                         ],
                                                       ),

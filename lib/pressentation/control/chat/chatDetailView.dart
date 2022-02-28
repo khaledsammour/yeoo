@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:yeeo/pressentation/auth/serviceProviderModel.dart';
-import 'package:yeeo/pressentation/auth/userModel.dart';
+
 import 'package:yeeo/pressentation/control/chat/chatDetailViewModel.dart';
 import 'package:yeeo/pressentation/control/chat/chatModel.dart';
 import 'package:yeeo/pressentation/control/userControl/chat/chatView.dart';
-import 'package:yeeo/pressentation/control/userControl/chat/chatViewModel.dart';
-import 'package:yeeo/pressentation/control/chat/messageModel.dart';
 import 'package:yeeo/pressentation/control/userControl/controlViewModel.dart';
 import 'package:yeeo/pressentation/resource/colorManager.dart';
 import 'package:yeeo/pressentation/resource/stringsManager.dart';
@@ -18,17 +15,14 @@ import 'package:yeeo/pressentation/widget/flexText.dart';
 class ChatDetailView extends StatelessWidget {
   const ChatDetailView({
     Key? key,
-    required this.serviceProviderModel,
-    required this.userModel,
     required this.chatModel,
   }) : super(key: key);
-  final ServiceProviderModel serviceProviderModel;
-  final UserModel userModel;
+
   final ChatModel chatModel;
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ChatDetailViewModel>(
+    return GetX<ChatDetailViewModel>(
         init: ChatDetailViewModel(chatModel: chatModel),
         builder: (controller) {
           return GestureDetector(
@@ -53,7 +47,7 @@ class ChatDetailView extends StatelessWidget {
                         Container(
                           width: 113.w,
                           child: FlexText(
-                            title: serviceProviderModel.userName,
+                            title: chatModel.serviceProviderName,
                             style: getRegularSalsaStyle(
                                 color: ColorManager.black,
                                 fontSize: FontSize.s36),
@@ -95,13 +89,13 @@ class ChatDetailView extends StatelessWidget {
                                 height: 88.h,
                                 alignment:
                                     controller.messageModel[index].sender ==
-                                            userModel.userId
+                                            chatModel.userId
                                         ? Alignment.bottomRight
                                         : Alignment.bottomLeft,
                                 child: Column(
                                   crossAxisAlignment:
                                       controller.messageModel[index].sender ==
-                                              userModel.userId
+                                              chatModel.userId
                                           ? CrossAxisAlignment.end
                                           : CrossAxisAlignment.start,
                                   children: [
@@ -109,7 +103,7 @@ class ChatDetailView extends StatelessWidget {
                                       child: Container(
                                         margin: controller.messageModel[index]
                                                     .sender ==
-                                                userModel.userId
+                                                chatModel.userId
                                             ? EdgeInsets.only(right: 20.w)
                                             : EdgeInsets.only(left: 10.w),
                                         child: FlexText(
@@ -209,7 +203,7 @@ class ChatDetailView extends StatelessWidget {
                               controller.message == null
                                   ? Get.snackbar("empty", "type a message")
                                   : controller.sendMessage(
-                                      chatModel.chatId, userModel.userId);
+                                      chatModel.chatId, chatModel.userId);
                             },
                             child: Container(
                               margin: EdgeInsets.symmetric(vertical: 6.h),

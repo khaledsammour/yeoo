@@ -20,6 +20,7 @@ class UserViewModel extends GetxController {
   late UserModel _userModel;
   var tapped = false;
   var longPressed = false;
+
   var send = false;
   var service = [
     HomeStrings.swimmingPool,
@@ -50,12 +51,12 @@ class UserViewModel extends GetxController {
   TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    getCurrentUser();
+    await getCurrentUser();
   }
 
-  void getCurrentUser() async {
+  getCurrentUser() async {
     _loading.value = true;
     await localStorageData.getUser.then((value) {
       _userModel = value!;
@@ -81,10 +82,13 @@ class UserViewModel extends GetxController {
       Get.snackbar("service is empty", "please choose a service");
     } else {
       send = true;
+      update();
       await uploadFile();
       await downloadUrl();
       await saveService();
-      jobDetail = "";
+      focusNode.unfocus();
+      textEditingController.clear();
+      tapped = false;
       img.clear();
       imgFirebase.clear();
       imgUrl.clear();
@@ -162,6 +166,7 @@ class UserViewModel extends GetxController {
   saveService() async {
     JobModel jobModel = JobModel(
       userId: _userModel.userId,
+      userName: _userModel.userName,
       jobDetail: jobDetail,
       images: imgUrl,
       availabilityFrom: availabilityFrom.toString(),
@@ -171,6 +176,7 @@ class UserViewModel extends GetxController {
       location: locations[locationIndex],
       service: service[serviceIndex],
     );
+
     await FireStoreService().addServiceToFirestore(jobModel);
   }
 }

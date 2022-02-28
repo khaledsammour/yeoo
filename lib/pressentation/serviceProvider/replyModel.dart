@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ReplyModel {
   late String jobDetail,
       availabilityFrom,
@@ -8,14 +10,16 @@ class ReplyModel {
       location,
       accepted,
       userId,
+      userName,
       jobId,
       serviceProviderId,
       service,
       reported,
       timeStamp,
-      like,
       rejected;
+  String? replyId;
   late List images;
+  late List like;
 
   ReplyModel({
     required this.jobDetail,
@@ -27,33 +31,32 @@ class ReplyModel {
     required this.location,
     required this.duration,
     required this.userId,
+    required this.userName,
     required this.serviceProviderId,
     required this.jobId,
     required this.service,
   });
 
-  ReplyModel.fromJson(Map<dynamic, dynamic> map) {
-    if (map == null) {
-      return;
-    }
-    jobDetail = map['jobDetail'];
-    availabilityFrom = map['availabilityFrom'];
-    availabilityTo = map['availabilityTo'];
-    budgetFrom = map['budgetFrom'];
-    budgetTo = map['budgetTo'];
-    location = map['location'];
-    images = map['images'];
-    accepted = map['accepted'];
-    rejected = map['rejected'];
-    duration = map['duration'];
-    like = map['like'];
-
-    userId = map['userId'];
-    jobId = map['jobId'];
-    serviceProviderId = map['serviceProviderId'];
-    service = map['service'];
-    timeStamp = map['timeStamp'];
-    reported = map['reported'];
+  ReplyModel.fromJson(DocumentSnapshot documentSnapshot) {
+    replyId = documentSnapshot.id;
+    jobDetail = documentSnapshot['jobDetail'];
+    availabilityFrom = documentSnapshot['availabilityFrom'];
+    availabilityTo = documentSnapshot['availabilityTo'];
+    budgetFrom = documentSnapshot['budgetFrom'];
+    budgetTo = documentSnapshot['budgetTo'];
+    location = documentSnapshot['location'];
+    images = documentSnapshot['images'];
+    accepted = documentSnapshot['accepted'];
+    rejected = documentSnapshot['rejected'];
+    duration = documentSnapshot['duration'];
+    like = documentSnapshot['like'];
+    userId = documentSnapshot['userId'];
+    userName = documentSnapshot['userName'];
+    jobId = documentSnapshot['jobId'];
+    serviceProviderId = documentSnapshot['serviceProviderId'];
+    service = documentSnapshot['service'];
+    timeStamp = documentSnapshot['timeStamp'];
+    reported = documentSnapshot['reported'];
   }
   toJson() {
     return {
@@ -66,12 +69,13 @@ class ReplyModel {
       'images': images,
       'duration': duration,
       'userId': userId,
+      'userName': userName,
       'jobId': jobId,
       'serviceProviderId': serviceProviderId,
       'service': service,
       'timeStamp': DateTime.now().toString(),
       'reported': "false",
-      'like': "false",
+      'like': [],
       'accepted': "false",
       'rejected': "false",
     };

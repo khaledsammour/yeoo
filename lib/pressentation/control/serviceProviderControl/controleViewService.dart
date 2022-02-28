@@ -86,18 +86,9 @@ class ControlViewService extends StatelessWidget {
                     margin: EdgeInsets.only(right: 6.r),
                     height: 29.42.h,
                     width: 34.85.w,
-                    child: Column(
-                      children: [
-                        FlexText(
-                            title: "105",
-                            style: getMPlus1cStyle(
-                                color: ColorManager.red,
-                                fontSize: FontSize.s10)),
-                        Image.asset(
-                          ImageStrings.messagePolygon,
-                          fit: BoxFit.fill,
-                        ),
-                      ],
+                    child: Image.asset(
+                      ImageStrings.messagePolygon,
+                      fit: BoxFit.contain,
                     )),
               );
             }),
@@ -107,41 +98,85 @@ class ControlViewService extends StatelessWidget {
 
   Widget bottomNavigatorBar() {
     return GetBuilder<ControlViewModelService>(
-      init: ControlViewModelService(),
-      builder: (controller) => Container(
-        height: 55.h,
-        child: BottomNavigationBar(
-            items: [
-              BottomNavigationBarItem(
-                  icon: Container(
-                    height: 32.h,
-                    width: 36.w,
-                    child: Image.asset(
-                      controller.navigatorValue == 0
-                          ? ImageStrings.services
-                          : ImageStrings.services,
-                      fit: BoxFit.fill,
+        init: ControlViewModelService(),
+        builder: (controller) => Container(
+              height: 60.h,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 94.w,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      controller.changeSelectedValue(0);
+                      controller.update();
+                    },
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 14.h,
+                        ),
+                        Container(
+                          height: 32.h,
+                          width: 36.w,
+                          child: Image.asset(
+                            controller.navigatorValue == 0
+                                ? ImageStrings.services
+                                : ImageStrings.services,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4.h,
+                        ),
+                        Container(
+                          height: 3.h,
+                          width: 20.w,
+                          color: controller.navigatorValue == 0
+                              ? ColorManager.yellow
+                              : ColorManager.primary,
+                        ),
+                      ],
                     ),
                   ),
-                  title: Container(height: 0.0)),
-              BottomNavigationBarItem(
-                  icon: Container(
-                    height: 32.h,
-                    width: 36.w,
-                    child: Image.asset(
-                      controller.navigatorValue == 1
-                          ? ImageStrings.starService
-                          : ImageStrings.starService,
-                      fit: BoxFit.fill,
+                  SizedBox(
+                    width: 180.w,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      controller.changeSelectedValue(1);
+                      controller.update();
+                    },
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 14.h,
+                        ),
+                        Container(
+                          height: 32.h,
+                          width: 36.w,
+                          child: Image.asset(
+                            controller.navigatorValue == 1
+                                ? ImageStrings.starService
+                                : ImageStrings.starService,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4.h,
+                        ),
+                        Container(
+                          height: 3.h,
+                          width: 20.w,
+                          color: controller.navigatorValue == 1
+                              ? ColorManager.yellow
+                              : ColorManager.primary,
+                        ),
+                      ],
                     ),
                   ),
-                  title: Container(height: 0.0)),
-            ],
-            backgroundColor: ColorManager.primary,
-            elevation: 0,
-            currentIndex: controller.navigatorValue,
-            onTap: (index) => controller.changeSelectedValue(index)),
-      ),
-    );
+                ],
+              ),
+            ));
   }
 }

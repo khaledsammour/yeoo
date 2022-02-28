@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:yeeo/binding.dart';
 import 'package:yeeo/pressentation/auth/loginView.dart';
-import 'package:yeeo/pressentation/control/userControl/controlView.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
